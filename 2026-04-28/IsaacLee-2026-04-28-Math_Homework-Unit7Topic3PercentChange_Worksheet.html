@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Math Homework: Unit 7 Topic 3 — Percent of Change (Sales Tax, Discounts, Markup) — Isaac Lee (2026-04-28)</title>
+<script>
+window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']] },
+    startup: { ready: () => { MathJax.startup.defaultReady(); } }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+/* base-print.css */
+@page { size: letter; margin: 0.5in; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fafafa; }
+body { font-family: 'Times New Roman', serif; color: #000; }
+.page { max-width: 720px; margin: 0 auto; padding: 60px 50px 40px 50px; background: #fff; }
+.page-break { page-break-before: always; break-before: page; }
+@media print {
+    html, body { background: #fff; }
+    .page { max-width: none; padding: 0.6in 0.6in 0.5in 0.6in; margin: 0; box-shadow: none; }
+    .problem, .answer-block, .reminder, .example, .level-divider { page-break-inside: avoid; break-inside: avoid; }
+    .part-header, .directions, .problem-header, h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+    .page-break { page-break-before: always; break-before: page; }
+}
+
+/* theme-boy.css */
+:root {
+    --color-primary: #1565c0;
+    --color-primary-dark: #0d47a1;
+    --color-accent: #00838f;
+    --color-header-border: #1565c0;
+    --color-final-answer: #2e7d32;
+    --color-warning: #c62828;
+    --color-parent-note: #283593;
+    --color-tag-bg: transparent;
+    --color-tag-border: #1565c0;
+    --color-tag-text: #1565c0;
+    --color-muted: #555;
+    --color-rule: #ccc;
+}
+
+/* level-middle.css */
+body { font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.5; }
+.header { text-align: center; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 2px solid var(--color-header-border); }
+.school-name { font-size: 9pt; letter-spacing: 4px; color: var(--color-primary); font-weight: bold; }
+.subject-tag, .key-tag, .level-tag { display: inline-block; padding: 2px 10px; font-size: 8pt; letter-spacing: 2px; margin: 5px 3px 8px 3px; font-weight: bold; }
+.subject-tag { border: 1.5px solid var(--color-primary); color: var(--color-primary); }
+.level-tag.medium { border: 1.5px solid var(--color-primary); color: var(--color-primary); }
+.level-tag.challenge { border: 1.5px solid var(--color-warning); color: var(--color-warning); }
+h1 { font-size: 14.5pt; margin: 6px 0 8px 0; font-weight: bold; line-height: 1.3; }
+.info { display: flex; justify-content: space-between; font-size: 10pt; margin-top: 6px; }
+.standard { font-size: 8pt; font-style: italic; margin-top: 5px; color: var(--color-muted); }
+.part-header { font-size: 12pt; font-weight: bold; color: var(--color-primary); margin: 18px 0 5px 0; padding-bottom: 3px; border-bottom: 2px solid var(--color-primary); }
+.part-header .lvl { float: right; font-size: 9pt; padding: 1px 8px; border-radius: 3px; font-weight: normal; letter-spacing: 1px; }
+.part-header .lvl.medium { background: transparent; border: 1px solid var(--color-primary); color: var(--color-primary); }
+.part-header .lvl.challenge { background: transparent; border: 1px solid var(--color-warning); color: var(--color-warning); }
+.directions { font-size: 10pt; font-style: italic; color: #333; margin-bottom: 10px; line-height: 1.5; }
+.directions strong { color: #000; font-style: normal; }
+.problem { margin: 10px 0; font-size: 11pt; line-height: 1.55; padding-left: 10px; border-left: 3px solid var(--color-primary); }
+.problem.challenge { border-left-color: var(--color-warning); }
+.q-num { display: inline-block; min-width: 26px; font-weight: bold; color: var(--color-primary); }
+.problem.challenge .q-num { color: var(--color-warning); }
+.answer-row { margin: 5px 0 3px 28px; font-size: 11pt; }
+.ans-line { display: inline-block; border-bottom: 1.5px solid #000; min-width: 110px; height: 18px; margin: 0 4px; vertical-align: bottom; }
+.work-space { min-height: 70px; margin-left: 28px; margin-top: 2px; }
+.concept-box { border: 1.5px solid var(--color-accent); background: transparent; padding: 8px 14px; margin: 8px 0; font-size: 10pt; border-left-width: 4px; }
+.concept-box .title { font-weight: bold; color: var(--color-accent); margin-bottom: 4px; }
+.concept-box ul { margin: 4px 0 0 18px; padding: 0; }
+.concept-box li { margin-bottom: 2px; }
+.level-divider { text-align: center; margin: 18px 0 6px 0; padding: 9px; border: 2px dashed var(--color-warning); color: var(--color-warning); font-weight: bold; font-size: 11pt; letter-spacing: 3px; }
+.footer { text-align: center; font-size: 8pt; color: #666; border-top: 1px solid var(--color-rule); margin-top: 20px; padding-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<div class="header">
+    <div class="school-name">NEWTON SCHOOL</div>
+    <div class="subject-tag">MATH &middot; UNIT 7 TOPIC 3</div>
+    <h1>Percent of Change:<br>Sales Tax, Discounts, Markup &amp; Reverse Problems</h1>
+    <div class="info">
+        <span><strong>Student:</strong> Isaac Lee</span>
+        <span><strong>Date:</strong> 2026-04-28</span>
+    </div>
+    <div class="standard"><strong>Standard:</strong> CCSS.MATH.CONTENT.7.RP.A.3 — Solve multistep ratio and percent problems including percent increase/decrease, simple interest, tax, markups, markdowns, gratuities, commissions, fees, and finding the percent of change.</div>
+</div>
+
+<div class="concept-box">
+    <div class="title">Quick Reference — From Today's Lecture</div>
+    <ul>
+        <li><strong>Percent of Change formula:</strong> \(\dfrac{\text{Amount of Change}}{\text{Original Amount}} = \dfrac{X}{100}\)</li>
+        <li><strong>Sales Tax:</strong> Tax = Rate &times; Marked Price; &nbsp; Total Cost = Marked Price + Tax</li>
+        <li><strong>Discount:</strong> Discount = Rate &times; List Price; &nbsp; Sale Price = List Price &minus; Discount</li>
+        <li><strong>Markup (cost &rarr; selling price):</strong> Markup % = (Selling Price &minus; Cost) &divide; Cost &times; 100%</li>
+        <li><strong>Reverse:</strong> Original = Sale Price &divide; (1 &minus; rate); &nbsp; Original = Total &divide; (1 + rate)</li>
+    </ul>
+</div>
+
+<!-- ============================ PART A ============================ -->
+<div class="part-header">Part A — Sales Tax and Total Cost <span class="lvl medium">MEDIUM</span></div>
+<div class="directions"><strong>Directions:</strong> Find the sales tax and the total cost.</div>
+
+<div class="problem">
+    <span class="q-num">1.</span> A radio is marked at $50, with a 6% sales tax rate. Find the sales tax and the total cost.
+    <div class="answer-row">Sales tax: $<span class="ans-line"></span> &nbsp; Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">2.</span> A bookshelf is marked at $200, with an 8% sales tax rate. Find the sales tax and the total cost.
+    <div class="answer-row">Sales tax: $<span class="ans-line"></span> &nbsp; Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<!-- ============================ PART B ============================ -->
+<div class="part-header">Part B — Discount and Sale Price <span class="lvl medium">MEDIUM</span></div>
+<div class="directions"><strong>Directions:</strong> Find the discount and the sale price.</div>
+
+<div class="problem">
+    <span class="q-num">3.</span> A sweater has a list price of $80, and the rate of discount is 25%. Find the discount and the sale price.
+    <div class="answer-row">Discount: $<span class="ans-line"></span> &nbsp; Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">4.</span> A jacket has a list price of $150, and the rate of discount is 40%. Find the discount and the sale price.
+    <div class="answer-row">Discount: $<span class="ans-line"></span> &nbsp; Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 2 ============================ -->
+<div class="page page-break">
+
+<!-- ============================ PART C ============================ -->
+<div class="part-header">Part C — Percent of Change (Increase or Decrease) <span class="lvl medium">MEDIUM</span></div>
+<div class="directions"><strong>Directions:</strong> Identify whether the change is an <em>increase</em> or a <em>decrease</em>, then find the percent of change. Use \(\dfrac{\text{change}}{\text{original}} = \dfrac{X}{100}\).</div>
+
+<div class="problem">
+    <span class="q-num">5.</span> The number of points went from 40 to 60. Identify the change and find the percent of change.
+    <div class="answer-row"><span class="ans-line"></span> of <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">6.</span> A price went from $80 to $60. Identify the change and find the percent of change.
+    <div class="answer-row"><span class="ans-line"></span> of <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">7.</span> A score went from 25 points to 50 points. Identify the change and find the percent of change.
+    <div class="answer-row"><span class="ans-line"></span> of <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">8.</span> The number of party invitations went from 125 to 75. Identify the change and find the percent of change.
+    <div class="answer-row"><span class="ans-line"></span> of <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 3 ============================ -->
+<div class="page page-break">
+
+<!-- ============================ PART D ============================ -->
+<div class="part-header">Part D — Find the Original Amount (Reverse) <span class="lvl medium">MEDIUM</span></div>
+<div class="directions"><strong>Directions:</strong> Work backward to find the price <em>before</em> the discount or tax was applied.</div>
+
+<div class="problem">
+    <span class="q-num">9.</span> After 20% off, a pair of shoes sells for $40. What was the original price?
+    <div class="answer-row">Original price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">10.</span> Including a 10% sales tax, a hat costs $44. What was the price before tax?
+    <div class="answer-row">Original price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="level-divider">▼ &nbsp; CHALLENGING SECTION &nbsp; ▼</div>
+
+<!-- ============================ PART E ============================ -->
+<div class="part-header">Part E — Markup (Cost &rarr; Selling Price) <span class="lvl challenge">CHALLENGE</span></div>
+<div class="directions"><strong>Directions:</strong> Find the percent of markup using \(\text{markup \%} = \dfrac{\text{Selling Price} - \text{Cost}}{\text{Cost}} \times 100\%\).</div>
+
+<div class="problem challenge">
+    <span class="q-num">11.</span> A pair of Nike sneakers costs Nike only $20 to make, but customers pay $150 to buy them. What is the percent of markup?
+    <div class="answer-row">Markup: <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem challenge">
+    <span class="q-num">12.</span> A store buys a backpack from a supplier for $40 and sells it to customers for $100. What is the percent of markup?
+    <div class="answer-row">Markup: <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 4 ============================ -->
+<div class="page page-break">
+
+<!-- ============================ PART F ============================ -->
+<div class="part-header">Part F — Find the Rate <span class="lvl challenge">CHALLENGE</span></div>
+<div class="directions"><strong>Directions:</strong> Use \(\dfrac{\text{change}}{\text{original}} = \dfrac{X}{100}\) to find the missing percent.</div>
+
+<div class="problem challenge">
+    <span class="q-num">13.</span> A shirt is marked at $40, and the total cost (with sales tax) comes out to $42. What is the sales tax rate?
+    <div class="answer-row">Tax rate: <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem challenge">
+    <span class="q-num">14.</span> A bicycle has a list price of $120, and the sale price is $90. What is the rate of discount?
+    <div class="answer-row">Discount rate: <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+<!-- ============================ PART G ============================ -->
+<div class="part-header">Part G — Multi-Step Word Problems <span class="lvl challenge">CHALLENGE</span></div>
+<div class="directions"><strong>Directions:</strong> Read carefully. Apply each step in the right order.</div>
+
+<div class="problem challenge">
+    <span class="q-num">15.</span> A bicycle is originally priced at $200. The store first applies a 25% discount, then adds a 6% sales tax to the discounted price. Find the final total cost.
+    <div class="answer-row">Final total: $<span class="ans-line"></span></div>
+    <div class="work-space" style="min-height: 90px;"></div>
+</div>
+
+<div class="problem challenge">
+    <span class="q-num">16.</span> A guitar is originally priced at $300. The store first applies a 30% discount, then adds a 10% sales tax to the discounted price. Find the final total cost.
+    <div class="answer-row">Final total: $<span class="ans-line"></span></div>
+    <div class="work-space" style="min-height: 90px;"></div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 5 ============================ -->
+<div class="page page-break">
+
+<div class="problem challenge">
+    <span class="q-num">17.</span> You buy a book that is on sale for 30% off, and you pay $63. Your friend wants to know the original price of the book. Find the original price.
+    <div class="answer-row">Original price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem challenge">
+    <span class="q-num">18.</span> One week, 72 people got a speeding ticket on Main Street. The next week, only 36 people got a speeding ticket. What is the percent of change in speeding tickets?
+    <div class="answer-row"><span class="ans-line"></span> of <span class="ans-line"></span> %</div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem challenge">
+    <span class="q-num">19.</span> The same pair of sneakers is on sale at two stores.
+    Store A regular price is $50, with 30% off.
+    Store B regular price is $60, with 40% off.
+    Which store has the lower sale price, and by how much?
+    <div class="answer-row">Lower store: Store <span class="ans-line"></span> &nbsp; Difference: $<span class="ans-line"></span></div>
+    <div class="work-space" style="min-height: 100px;"></div>
+</div>
+
+<div class="problem challenge">
+    <span class="q-num">20.</span> A jacket is originally priced at $200. It is on sale for 25% off, and you also have a coupon that takes an extra 10% off the already-discounted sale price. Find the final price you actually pay.
+    <div class="answer-row">Final price: $<span class="ans-line"></span></div>
+    <div class="work-space" style="min-height: 110px;"></div>
+</div>
+
+<div class="footer">
+    Created by Newton School 2026-04-28 &copy; Copyright<br>
+    2175 Lemoine Ave Suite 304, Fort Lee, NJ 07650 &nbsp;·&nbsp; (201) 252-7252 &nbsp;·&nbsp; www.newtonschool.net
+</div>
+
+</div>
+
+</body>
+</html>

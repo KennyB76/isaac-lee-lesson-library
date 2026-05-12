@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isaac Lee — Math Homework: Angles, Quadrilaterals &amp; Polygons</title>
+
+<script>
+window.MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+    startup: { ready: () => { MathJax.startup.defaultReady(); } }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<style>
+/* =========================================================================
+   INLINE CSS BUNDLE: base-print + theme-boy + level-middle
+   ========================================================================= */
+
+/* --- base-print.css --- */
+@page { size: letter; margin: 0.5in; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fafafa; }
+body { font-family: 'Times New Roman', serif; color: #000; }
+.page { max-width: 720px; margin: 0 auto; padding: 70px 50px 40px 50px; background: #fff; }
+.page-break { page-break-before: always; break-before: page; }
+@media print {
+    html, body { background: #fff; }
+    .page { max-width: none; padding: 0.7in 0.6in 0.5in 0.6in; margin: 0; box-shadow: none; }
+    .problem, .answer-block, .reminder, .parent-note, .example, .word-problem {
+        page-break-inside: avoid; break-inside: avoid;
+    }
+    .part-header, .directions, .problem-header, h1, h2, h3 {
+        page-break-after: avoid; break-after: avoid;
+    }
+    .page-break { page-break-before: always; break-before: page; }
+    .footer { display: none !important; }
+}
+
+/* --- theme-boy.css --- */
+:root {
+    --color-primary:        #1565c0;
+    --color-primary-dark:   #0d47a1;
+    --color-accent:         #00838f;
+    --color-header-border:  #1565c0;
+    --color-final-answer:   #2e7d32;
+    --color-warning:        #c62828;
+    --color-parent-note:    #283593;
+    --color-tag-bg:         transparent;
+    --color-tag-border:     #1565c0;
+    --color-tag-text:       #1565c0;
+    --color-muted:          #555;
+    --color-rule:           #ccc;
+}
+
+/* --- level-middle.css --- */
+body { font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.5; }
+.header { text-align: center; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 2px solid var(--color-header-border); }
+.school-name { font-size: 9pt; letter-spacing: 4px; color: var(--color-primary); font-weight: bold; }
+.subject-tag { display: inline-block; padding: 2px 10px; font-size: 8pt; letter-spacing: 2px; margin: 5px 3px 8px 3px; font-weight: bold; border: 1.5px solid var(--color-primary); color: var(--color-primary); }
+h1 { font-size: 15pt; margin: 6px 0 10px 0; font-weight: bold; line-height: 1.3; }
+.info { display: flex; justify-content: space-between; font-size: 10pt; margin-top: 6px; }
+.standard { font-size: 8pt; font-style: italic; margin-top: 5px; color: var(--color-muted); }
+.part-header { font-size: 12pt; font-weight: bold; color: var(--color-primary); margin: 22px 0 6px 0; padding-bottom: 3px; border-bottom: 2px solid var(--color-primary); }
+.directions { font-size: 10pt; font-style: italic; color: #333; margin-bottom: 12px; line-height: 1.5; }
+.directions strong { color: #000; font-style: normal; }
+.problem { margin: 12px 0; font-size: 11pt; line-height: 1.6; }
+.q-num { display: inline-block; min-width: 26px; font-weight: bold; color: var(--color-primary); }
+.ans-line { display: inline-block; border-bottom: 1.5px solid #000; min-width: 80px; height: 18px; margin: 0 4px; vertical-align: bottom; }
+.work-space { min-height: 110px; margin-left: 28px; margin-top: 6px; margin-bottom: 8px; }
+.footer { text-align: center; font-size: 8pt; color: #666; border-top: 1px solid var(--color-rule); margin-top: 22px; padding-top: 6px; }
+
+/* --- Kenny Reminder Box --- */
+.kenny-reminder {
+    border: 2px solid var(--color-warning);
+    border-radius: 6px;
+    margin: 18px 0 10px 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+.kr-header {
+    background: transparent;
+    border-bottom: 1.5px solid var(--color-warning);
+    padding: 6px 14px;
+    font-size: 10pt;
+    font-weight: bold;
+    color: var(--color-warning);
+    letter-spacing: 0.5px;
+}
+.kr-icon { margin-right: 6px; }
+.kr-body {
+    padding: 10px 16px;
+    font-size: 10pt;
+    line-height: 1.6;
+    color: #222;
+}
+.kr-body p { margin: 4px 0; }
+
+/* --- Diagram area (geometry) --- */
+.diagram-box {
+    border: 1px solid #aaa;
+    padding: 14px 16px;
+    margin: 8px 0 6px 28px;
+    font-size: 10pt;
+    line-height: 1.7;
+    background: transparent;
+    page-break-inside: avoid;
+}
+.sub-label { font-weight: bold; color: var(--color-primary); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===== HEADER ===== -->
+  <div class="header">
+    <div class="school-name">NEWTON SCHOOL</div>
+    <div class="subject-tag">MATH · GEOMETRY</div>
+    <h1>Angles, Quadrilaterals &amp; Polygons</h1>
+    <div class="info">
+      <span><strong>Student:</strong> Isaac Lee</span>
+      <span><strong>Date:</strong> 2026-05-12</span>
+    </div>
+    <div class="standard">
+      <strong>Standard:</strong> CCSS.MATH.CONTENT.7.G.A.2 / 7.G.B.5 — Draw, describe, and analyze geometric figures;
+      use facts about angles formed by parallel lines cut by a transversal; solve problems involving angle measures,
+      quadrilateral properties, and polygon interior angle sums.
+    </div>
+  </div>
+
+  <!-- ===== KENNY REMINDER BOX ===== -->
+  <div class="kenny-reminder">
+    <div class="kr-header"><span class="kr-icon">&#128276;</span> Mr. Kenny's Key Point</div>
+    <div class="kr-body">
+      <p><strong>Cut it into triangles!</strong> Pick one vertex and draw all the diagonals — you get
+         <strong>\((n - 2)\)</strong> triangles. Each triangle has 180°, so the polygon's interior angles add up to
+         <strong>\((n - 2) \times 180°\)</strong>.</p>
+      <p><em>Or remember: all exterior angles ALWAYS add to 360°.</em></p>
+    </div>
+  </div>
+
+  <!-- ===== PART A ===== -->
+  <div class="part-header">Part A — Parallel Lines Cut by a Transversal</div>
+  <div class="directions">
+    <strong>Directions:</strong> Use the properties of parallel lines cut by a transversal to answer each question.
+    Show all work and reasoning in the space provided.
+  </div>
+
+  <!-- Problem 1 -->
+  <div class="problem">
+    <span class="q-num">1.</span>
+    Two parallel lines are cut by a transversal, forming angles \(\angle 1\) through \(\angle 8\).
+    Given that \(m\angle 1 = 65°\), find the measures of \(\angle 2\), \(\angle 5\), and \(\angle 8\).
+    Name the angle relationship you used for each.
+    <div class="diagram-box">
+      <span class="sub-label">Hint:</span><br>
+      ∠1 and ∠2 are on a straight line (supplementary).<br>
+      ∠1 and ∠5 are in the same position at each intersection.<br>
+      ∠1 and ∠8 are on opposite sides of the transversal, outside the parallel lines.
+    </div>
+    <div class="work-space"></div>
+    <span style="margin-left:28px;">\(m\angle 2 =\) <span class="ans-line"></span>&emsp;
+    \(m\angle 5 =\) <span class="ans-line"></span>&emsp;
+    \(m\angle 8 =\) <span class="ans-line"></span></span>
+  </div>
+
+  <!-- Problem 2 -->
+  <div class="problem">
+    <span class="q-num">2.</span>
+    Angles \(\angle 4\) and \(\angle 6\) are formed where a transversal crosses two parallel lines.
+    <br>
+    (a) What type of angle pair are \(\angle 4\) and \(\angle 6\)? <span class="ans-line"></span>
+    <br>
+    (b) Are they equal or supplementary? <span class="ans-line"></span>
+    <br>
+    (c) If \(m\angle 4 = 112°\), what is \(m\angle 6\)?
+    <div class="work-space"></div>
+    <span style="margin-left:28px;">\(m\angle 6 =\) <span class="ans-line"></span></span>
+  </div>
+
+  <!-- Problem 3 -->
+  <div class="problem">
+    <span class="q-num">3.</span>
+    Two parallel lines are cut by a transversal. Angles \(\angle 3\) and \(\angle 5\) are
+    <em>alternate interior angles</em>, so they are equal.
+    <br>
+    Given \(m\angle 3 = (2x + 10)°\) and \(m\angle 5 = (3x - 20)°\), find the value of \(x\)
+    and the measure of each angle.
+    <div class="work-space" style="min-height:120px;"></div>
+    <span style="margin-left:28px;">\(x =\) <span class="ans-line"></span>&emsp;
+    \(m\angle 3 = m\angle 5 =\) <span class="ans-line"></span></span>
+  </div>
+
+  <!-- ===== PART B (page break before) ===== -->
+  <div class="part-header page-break">Part B — Quadrilaterals</div>
+  <div class="directions">
+    <strong>Directions:</strong> Use properties of quadrilaterals to solve each problem.
+    Show all work in the space provided.
+  </div>
+
+  <!-- Problem 4 -->
+  <div class="problem">
+    <span class="q-num">4.</span>
+    In parallelogram \(ABCD\), \(m\angle A = 72°\).
+    Find the measures of \(\angle B\), \(\angle C\), and \(\angle D\).
+    (Hint: In a parallelogram, opposite angles are equal and consecutive angles are supplementary.)
+    <div class="work-space"></div>
+    <span style="margin-left:28px;">\(m\angle B =\) <span class="ans-line"></span>&emsp;
+    \(m\angle C =\) <span class="ans-line"></span>&emsp;
+    \(m\angle D =\) <span class="ans-line"></span></span>
+  </div>
+
+  <!-- Problem 5 -->
+  <div class="problem">
+    <span class="q-num">5.</span>
+    Trapezoid \(PQRS\) has one pair of parallel sides (\(\overline{PQ} \parallel \overline{SR}\)).
+    Two consecutive angles on the same leg are \(\angle P = 110°\) and \(\angle S = \,?\)
+    <br>
+    What is \(m\angle S\)? Explain why these two angles are supplementary.
+    <div class="work-space"></div>
+    <span style="margin-left:28px;">\(m\angle S =\) <span class="ans-line"></span></span>
+  </div>
+
+  <!-- Problem 6 -->
+  <div class="problem">
+    <span class="q-num">6.</span>
+    A quadrilateral has <strong>four congruent sides</strong> and <strong>four right angles</strong>.
+    <br>
+    (a) Name this quadrilateral: <span class="ans-line" style="min-width:140px;"></span>
+    <br>
+    (b) Circle ALL names that apply:
+    <div style="margin-left:28px; margin-top:6px;">
+      &emsp;Trapezoid &emsp; Parallelogram &emsp; Rectangle &emsp; Rhombus &emsp; Square
+    </div>
+    <div class="work-space" style="min-height:70px;"></div>
+  </div>
+
+  <!-- ===== PART C ===== -->
+  <div class="part-header">Part C — Polygon Angle Sum Theorem</div>
+  <div class="directions">
+    <strong>Directions:</strong> Use \((n-2) \times 180°\) to find angle sums and individual angle measures.
+    Show the formula and all steps.
+  </div>
+
+  <!-- Problem 7 -->
+  <div class="problem">
+    <span class="q-num">7.</span>
+    Find the interior angle sum of a <strong>hexagon</strong> (\(n = 6\)) using the formula.
+    <br>
+    Then, in the hexagon below, <em>draw all the diagonals from one vertex</em> to show that a hexagon is made of \((n-2) = 4\) triangles.
+    <div class="diagram-box" style="text-align:center; min-height:90px;">
+      <!-- Simple hexagon SVG outline for drawing activity -->
+      <svg width="120" height="104" viewBox="-10 -10 120 104" style="overflow:visible;">
+        <polygon points="55,2 104,29 104,76 55,103 6,76 6,29"
+                 fill="none" stroke="#333" stroke-width="2"/>
+        <text x="55" y="-2" text-anchor="middle" font-size="9" fill="#555">Draw diagonals from one vertex</text>
+      </svg>
+    </div>
+    <div class="work-space" style="min-height:90px;"></div>
+    <span style="margin-left:28px;">Interior angle sum \(=\) <span class="ans-line"></span></span>
+  </div>
+
+  <!-- Problem 8 -->
+  <div class="problem">
+    <span class="q-num">8.</span>
+    Find the measure of <strong>each interior angle</strong> of a regular octagon (\(n = 8\)).
+    <br>
+    <em>Hint: For a regular polygon, each interior angle \(= \dfrac{(n-2)\times180°}{n}\)</em>
+    <div class="work-space" style="min-height:120px;"></div>
+    <span style="margin-left:28px;">Each interior angle \(=\) <span class="ans-line"></span></span>
+  </div>
+
+  <!-- page-break before Problem 9 -->
+  <div class="part-header page-break" style="border-bottom:none; margin-bottom:0;">&nbsp;</div>
+
+  <!-- Problem 9 -->
+  <div class="problem" style="margin-top:10px;">
+    <span class="q-num">9.</span>
+    The interior angle sum of a polygon is <strong>1260°</strong>.
+    <br>
+    (a) Use the formula \((n-2)\times 180° = 1260°\) to find \(n\).
+    <br>
+    (b) What is the name of this polygon?
+    <div class="work-space" style="min-height:130px;"></div>
+    <span style="margin-left:28px;">\(n =\) <span class="ans-line"></span>&emsp;
+    Name: <span class="ans-line" style="min-width:120px;"></span></span>
+  </div>
+
+  <!-- Problem 10 -->
+  <div class="problem">
+    <span class="q-num">10.</span>
+    Find the measure of each <strong>exterior angle</strong> of a regular pentagon (\(n = 5\)).
+    <br>
+    <em>Hint: All exterior angles of any polygon always add up to 360°.</em>
+    <br>
+    <strong>Bonus:</strong> Use your answer to find each <em>interior</em> angle of the regular pentagon.
+    (Interior + Exterior = 180°)
+    <div class="work-space" style="min-height:130px;"></div>
+    <span style="margin-left:28px;">Each exterior angle \(=\) <span class="ans-line"></span>&emsp;
+    Each interior angle \(=\) <span class="ans-line"></span></span>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="footer">
+    Created by Newton School 2026-05-12 &copy; Copyright
+  </div>
+
+</div>
+</body>
+</html>

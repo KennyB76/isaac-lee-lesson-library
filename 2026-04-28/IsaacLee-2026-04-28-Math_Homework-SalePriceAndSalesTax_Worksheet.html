@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Math Homework: Sale Price and Total Cost with Sales Tax — Isaac Lee (2026-04-28)</title>
+<script>
+window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']] },
+    startup: { ready: () => { MathJax.startup.defaultReady(); } }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+/* base-print.css */
+@page { size: letter; margin: 0.5in; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fafafa; }
+body { font-family: 'Times New Roman', serif; color: #000; }
+.page { max-width: 720px; margin: 0 auto; padding: 60px 50px 40px 50px; background: #fff; }
+.page-break { page-break-before: always; break-before: page; }
+@media print {
+    html, body { background: #fff; }
+    .page { max-width: none; padding: 0.6in 0.6in 0.5in 0.6in; margin: 0; box-shadow: none; }
+    .problem, .answer-block, .reminder, .example { page-break-inside: avoid; break-inside: avoid; }
+    .part-header, .directions, .problem-header, h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+    .page-break { page-break-before: always; break-before: page; }
+}
+
+/* theme-boy.css */
+:root {
+    --color-primary: #1565c0;
+    --color-primary-dark: #0d47a1;
+    --color-accent: #00838f;
+    --color-header-border: #1565c0;
+    --color-final-answer: #2e7d32;
+    --color-warning: #c62828;
+    --color-parent-note: #283593;
+    --color-tag-bg: transparent;
+    --color-tag-border: #1565c0;
+    --color-tag-text: #1565c0;
+    --color-muted: #555;
+    --color-rule: #ccc;
+}
+
+/* level-middle.css */
+body { font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.5; }
+.header { text-align: center; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 2px solid var(--color-header-border); }
+.school-name { font-size: 9pt; letter-spacing: 4px; color: var(--color-primary); font-weight: bold; }
+.subject-tag, .key-tag { display: inline-block; padding: 2px 10px; font-size: 8pt; letter-spacing: 2px; margin: 5px 3px 8px 3px; font-weight: bold; }
+.subject-tag { border: 1.5px solid var(--color-primary); color: var(--color-primary); }
+h1 { font-size: 15pt; margin: 6px 0 10px 0; font-weight: bold; line-height: 1.3; }
+.info { display: flex; justify-content: space-between; font-size: 10pt; margin-top: 6px; }
+.standard { font-size: 8pt; font-style: italic; margin-top: 5px; color: var(--color-muted); }
+.part-header { font-size: 12pt; font-weight: bold; color: var(--color-primary); margin: 22px 0 6px 0; padding-bottom: 3px; border-bottom: 2px solid var(--color-primary); }
+.directions { font-size: 10pt; font-style: italic; color: #333; margin-bottom: 12px; line-height: 1.5; }
+.directions strong { color: #000; font-style: normal; }
+.problem { margin: 12px 0; font-size: 11pt; line-height: 1.55; padding-left: 4px; border-left: 3px solid var(--color-primary); padding-left: 10px; }
+.q-num { display: inline-block; min-width: 26px; font-weight: bold; color: var(--color-primary); }
+.answer-row { margin: 6px 0 4px 28px; font-size: 11pt; }
+.ans-line { display: inline-block; border-bottom: 1.5px solid #000; min-width: 110px; height: 18px; margin: 0 4px; vertical-align: bottom; }
+.work-space { min-height: 70px; margin-left: 28px; margin-top: 2px; }
+.concept-box { border: 1.5px solid var(--color-accent); background: transparent; padding: 10px 14px; margin: 10px 0; font-size: 10pt; border-left-width: 4px; }
+.concept-box .title { font-weight: bold; color: var(--color-accent); margin-bottom: 4px; }
+.concept-box ul { margin: 4px 0 0 18px; padding: 0; }
+.concept-box li { margin-bottom: 2px; }
+.footer { text-align: center; font-size: 8pt; color: #666; border-top: 1px solid var(--color-rule); margin-top: 20px; padding-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<div class="header">
+    <div class="school-name">NEWTON SCHOOL</div>
+    <div class="subject-tag">MATH</div>
+    <h1>Sale Price and Total Cost with Sales Tax</h1>
+    <div class="info">
+        <span><strong>Student:</strong> Isaac Lee</span>
+        <span><strong>Date:</strong> 2026-04-28</span>
+    </div>
+    <div class="standard"><strong>Standard:</strong> CCSS.MATH.CONTENT.6.RP.A.3.C / 7.RP.A.3 — Find a percent of a quantity; solve real-world problems involving discounts (markdowns) and sales tax (markups).</div>
+</div>
+
+<div class="concept-box">
+    <div class="title">Quick Reference</div>
+    <ul>
+        <li><strong>Sale Price (% off):</strong> Sale Price = Original Price &minus; (Percent &times; Original Price)</li>
+        <li><strong>Total Cost with Sales Tax:</strong> Total Cost = Original Price + (Tax Percent &times; Original Price)</li>
+        <li><strong>Convert percent to decimal:</strong> divide by 100. (Example: 25% = 0.25 = \(\tfrac{1}{4}\))</li>
+        <li><strong>Show your work</strong> — write the percent calculation, then the final price.</li>
+    </ul>
+</div>
+
+<!-- ============================ PART A ============================ -->
+<div class="part-header">Part A — Find the Sale Price</div>
+<div class="directions"><strong>Directions:</strong> For each problem, find the sale price after the discount is taken off. Show your work in the space provided.</div>
+
+<div class="problem">
+    <span class="q-num">1.</span> A jacket originally costs $80 and is on sale for 25% off. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">2.</span> A pair of sneakers regularly priced at $50 is marked down 20%. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">3.</span> A backpack costs $40 and is 15% off this week. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">4.</span> A book that normally costs $30 is on sale for 10% off. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 2 ============================ -->
+<div class="page page-break">
+
+<div class="problem">
+    <span class="q-num">5.</span> A video game originally priced at $60 is now 50% off. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">6.</span> A bicycle that costs $200 is on sale for 30% off. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">7.</span> A pair of jeans regularly priced at $50 is marked down 40%. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">8.</span> A skateboard that costs $120 is on sale for 25% off. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">9.</span> A pair of shoes priced at $80 has a 75% off clearance tag. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">10.</span> A watch that normally sells for $150 is marked down 60%. Find the sale price.
+    <div class="answer-row">Sale price: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 3 ============================ -->
+<div class="page page-break">
+
+<!-- ============================ PART B ============================ -->
+<div class="part-header">Part B — Find the Total Cost with Sales Tax</div>
+<div class="directions"><strong>Directions:</strong> For each problem, find the total cost after sales tax is added. Show your work in the space provided.</div>
+
+<div class="problem">
+    <span class="q-num">11.</span> A T-shirt costs $20, and there is a 5% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">12.</span> A toy is priced at $40 with a 10% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">13.</span> A book costs $25 with a 4% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">14.</span> A pair of headphones is priced at $50 with an 8% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">15.</span> A board game costs $60 and has a 5% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 4 ============================ -->
+<div class="page page-break">
+
+<div class="problem">
+    <span class="q-num">16.</span> A baseball bat priced at $80 has a 10% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">17.</span> A laptop case costs $30 with a 20% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">18.</span> A puzzle priced at $15 has a 20% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">19.</span> A water bottle costs $40 with a 25% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="problem">
+    <span class="q-num">20.</span> A pair of soccer cleats priced at $100 has a 7% sales tax. Find the total cost.
+    <div class="answer-row">Total cost: $<span class="ans-line"></span></div>
+    <div class="work-space"></div>
+</div>
+
+<div class="footer">
+    Created by Newton School 2026-04-28 &copy; Copyright<br>
+    2175 Lemoine Ave Suite 304, Fort Lee, NJ 07650 &nbsp;·&nbsp; (201) 252-7252 &nbsp;·&nbsp; www.newtonschool.net
+</div>
+
+</div>
+
+</body>
+</html>

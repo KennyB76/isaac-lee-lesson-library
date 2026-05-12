@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Answer Key — Unit 7 Topic 3: Percent of Change — Isaac Lee (2026-04-28)</title>
+<script>
+window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']] },
+    startup: { ready: () => { MathJax.startup.defaultReady(); } }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+/* base-print.css */
+@page { size: letter; margin: 0.5in; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fafafa; }
+body { font-family: 'Times New Roman', serif; color: #000; }
+.page { max-width: 720px; margin: 0 auto; padding: 60px 50px 40px 50px; background: #fff; }
+.page-break { page-break-before: always; break-before: page; }
+@media print {
+    html, body { background: #fff; }
+    .page { max-width: none; padding: 0.6in 0.6in 0.5in 0.6in; margin: 0; box-shadow: none; }
+    .answer-block { page-break-inside: avoid; break-inside: avoid; }
+    .part-header, .problem-header, h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+    .page-break { page-break-before: always; break-before: page; }
+}
+
+/* theme-boy.css */
+:root {
+    --color-primary: #1565c0;
+    --color-primary-dark: #0d47a1;
+    --color-accent: #00838f;
+    --color-header-border: #1565c0;
+    --color-final-answer: #2e7d32;
+    --color-warning: #c62828;
+    --color-tag-bg: transparent;
+    --color-tag-border: #1565c0;
+    --color-tag-text: #1565c0;
+    --color-muted: #555;
+    --color-rule: #ccc;
+}
+
+/* level-middle.css */
+body { font-family: 'Times New Roman', serif; font-size: 10.5pt; line-height: 1.5; }
+.header { text-align: center; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 2px solid var(--color-header-border); }
+.school-name { font-size: 9pt; letter-spacing: 4px; color: var(--color-primary); font-weight: bold; }
+.subject-tag, .key-tag { display: inline-block; padding: 2px 10px; font-size: 8pt; letter-spacing: 2px; margin: 5px 3px 8px 3px; font-weight: bold; }
+.subject-tag { border: 1.5px solid var(--color-primary); color: var(--color-primary); }
+.key-tag { border: 1.5px solid var(--color-warning); color: var(--color-warning); }
+h1 { font-size: 14pt; margin: 6px 0 8px 0; font-weight: bold; line-height: 1.3; }
+.info { display: flex; justify-content: space-between; font-size: 10pt; margin-top: 6px; }
+.standard { font-size: 8pt; font-style: italic; margin-top: 5px; color: var(--color-muted); }
+.part-header { font-size: 12pt; font-weight: bold; color: var(--color-primary); margin: 18px 0 6px 0; padding-bottom: 3px; border-bottom: 2px solid var(--color-primary); }
+.part-header.challenge-header { color: var(--color-warning); border-bottom-color: var(--color-warning); }
+.part-header .lvl { float: right; font-size: 9pt; padding: 1px 8px; border-radius: 3px; font-weight: normal; letter-spacing: 1px; }
+.part-header .lvl.medium { border: 1px solid var(--color-primary); color: var(--color-primary); }
+.part-header .lvl.challenge { border: 1px solid var(--color-warning); color: var(--color-warning); }
+.footer { text-align: center; font-size: 8pt; color: #666; border-top: 1px solid var(--color-rule); margin-top: 20px; padding-top: 6px; }
+.level-divider { text-align: center; margin: 18px 0 6px 0; padding: 9px; border: 2px dashed var(--color-warning); color: var(--color-warning); font-weight: bold; font-size: 11pt; letter-spacing: 3px; }
+
+.answer-block { margin: 9px 0; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; }
+.answer-block.challenge { border-color: var(--color-warning); border-width: 1.5px; }
+.problem-header { font-weight: bold; color: var(--color-primary); font-size: 10.5pt; margin-bottom: 4px; }
+.answer-block.challenge .problem-header { color: var(--color-warning); }
+.problem-text { font-size: 9.5pt; padding: 5px 9px; background: #f7f7f7; border-left: 3px solid #bbb; margin-bottom: 6px; line-height: 1.45; }
+.concept-tag { display: inline-block; font-size: 8pt; padding: 1px 7px; margin: 2px 3px 4px 0; border: 1px solid var(--color-tag-border); color: var(--color-tag-text); border-radius: 10px; }
+.concept-tag.warn { border-color: var(--color-warning); color: var(--color-warning); }
+.solution { margin: 4px 0; padding-left: 8px; border-left: 3px solid var(--color-final-answer); }
+.solution-step { margin: 2px 0; font-size: 9.5pt; line-height: 1.5; }
+.final-answer { display: inline-block; border: 2px solid var(--color-final-answer); color: var(--color-final-answer); font-weight: bold; padding: 3px 11px; border-radius: 4px; margin-top: 4px; font-size: 10.5pt; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<div class="header">
+    <div class="school-name">NEWTON SCHOOL</div>
+    <div class="subject-tag">MATH &middot; UNIT 7 TOPIC 3</div>
+    <span class="key-tag">ANSWER KEY</span>
+    <h1>Percent of Change:<br>Sales Tax, Discounts, Markup &amp; Reverse Problems</h1>
+    <div class="info">
+        <span><strong>Student:</strong> Isaac Lee</span>
+        <span><strong>Date:</strong> 2026-04-28</span>
+    </div>
+    <div class="standard"><strong>Standard:</strong> CCSS.MATH.CONTENT.7.RP.A.3 — Multistep ratio and percent problems.</div>
+</div>
+
+<!-- ============================ PART A ============================ -->
+<div class="part-header">Part A — Sales Tax and Total Cost <span class="lvl medium">MEDIUM</span></div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 1</div>
+    <div class="problem-text">Radio marked at $50 with 6% sales tax. Find tax and total cost.</div>
+    <span class="concept-tag">Sales Tax</span>
+    <div class="solution">
+        <div class="solution-step">Tax: \(0.06 \times \$50 = \$3\).</div>
+        <div class="solution-step">Total: \(\$50 + \$3 = \$53\).</div>
+    </div>
+    <div class="final-answer">Tax = $3, &nbsp; Total = $53</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 2</div>
+    <div class="problem-text">Bookshelf marked at $200 with 8% sales tax. Find tax and total cost.</div>
+    <span class="concept-tag">Sales Tax</span>
+    <div class="solution">
+        <div class="solution-step">Tax: \(0.08 \times \$200 = \$16\).</div>
+        <div class="solution-step">Total: \(\$200 + \$16 = \$216\).</div>
+    </div>
+    <div class="final-answer">Tax = $16, &nbsp; Total = $216</div>
+</div>
+
+<!-- ============================ PART B ============================ -->
+<div class="part-header">Part B — Discount and Sale Price <span class="lvl medium">MEDIUM</span></div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 3</div>
+    <div class="problem-text">Sweater list price $80, 25% discount. Find discount and sale price.</div>
+    <span class="concept-tag">Discount</span>
+    <div class="solution">
+        <div class="solution-step">Discount: \(0.25 \times \$80 = \$20\).</div>
+        <div class="solution-step">Sale price: \(\$80 - \$20 = \$60\).</div>
+    </div>
+    <div class="final-answer">Discount = $20, &nbsp; Sale = $60</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 4</div>
+    <div class="problem-text">Jacket list price $150, 40% discount. Find discount and sale price.</div>
+    <span class="concept-tag">Discount</span>
+    <div class="solution">
+        <div class="solution-step">Discount: \(0.40 \times \$150 = \$60\).</div>
+        <div class="solution-step">Sale price: \(\$150 - \$60 = \$90\).</div>
+    </div>
+    <div class="final-answer">Discount = $60, &nbsp; Sale = $90</div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 2 ============================ -->
+<div class="page page-break">
+
+<!-- ============================ PART C ============================ -->
+<div class="part-header">Part C — Percent of Change <span class="lvl medium">MEDIUM</span></div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 5</div>
+    <div class="problem-text">40 points to 60 points. Increase or decrease? Percent of change?</div>
+    <span class="concept-tag">Percent Increase</span>
+    <div class="solution">
+        <div class="solution-step">Change: \(60 - 40 = 20\) (went up &rarr; <strong>increase</strong>).</div>
+        <div class="solution-step">Set up: \(\dfrac{20}{40} = \dfrac{X}{100}\).</div>
+        <div class="solution-step">Solve: \(X = \dfrac{20 \times 100}{40} = 50\).</div>
+    </div>
+    <div class="final-answer">50% Increase</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 6</div>
+    <div class="problem-text">$80 to $60. Increase or decrease? Percent of change?</div>
+    <span class="concept-tag">Percent Decrease</span>
+    <div class="solution">
+        <div class="solution-step">Change: \(\$80 - \$60 = \$20\) (went down &rarr; <strong>decrease</strong>).</div>
+        <div class="solution-step">Set up: \(\dfrac{20}{80} = \dfrac{X}{100}\) &rArr; \(X = 25\).</div>
+    </div>
+    <div class="final-answer">25% Decrease</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 7</div>
+    <div class="problem-text">25 points to 50 points. Increase or decrease? Percent of change?</div>
+    <span class="concept-tag">Percent Increase</span>
+    <span class="concept-tag">Doubled</span>
+    <div class="solution">
+        <div class="solution-step">Change: \(50 - 25 = 25\) (<strong>increase</strong>).</div>
+        <div class="solution-step">Set up: \(\dfrac{25}{25} = \dfrac{X}{100}\) &rArr; \(X = 100\).</div>
+        <div class="solution-step"><em>Note:</em> When something <em>doubles</em>, the change equals the original — that's exactly 100% increase.</div>
+    </div>
+    <div class="final-answer">100% Increase</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 8</div>
+    <div class="problem-text">125 invitations to 75 invitations. Increase or decrease? Percent of change?</div>
+    <span class="concept-tag">Percent Decrease</span>
+    <div class="solution">
+        <div class="solution-step">Change: \(125 - 75 = 50\) (<strong>decrease</strong>).</div>
+        <div class="solution-step">Set up: \(\dfrac{50}{125} = \dfrac{X}{100}\) &rArr; \(X = 40\).</div>
+    </div>
+    <div class="final-answer">40% Decrease</div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 3 ============================ -->
+<div class="page page-break">
+
+<!-- ============================ PART D ============================ -->
+<div class="part-header">Part D — Find the Original Amount (Reverse) <span class="lvl medium">MEDIUM</span></div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 9</div>
+    <div class="problem-text">After 20% off, shoes sell for $40. Find original price.</div>
+    <span class="concept-tag">Reverse Discount</span>
+    <span class="concept-tag">80% remains</span>
+    <div class="solution">
+        <div class="solution-step">After 20% off, sale price = 80% of original.</div>
+        <div class="solution-step">Equation: \(0.80 \times x = 40\).</div>
+        <div class="solution-step">\(x = \dfrac{40}{0.80} = \$50\).</div>
+    </div>
+    <div class="final-answer">$50</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 10</div>
+    <div class="problem-text">Including 10% sales tax, hat costs $44. Find price before tax.</div>
+    <span class="concept-tag">Reverse Tax</span>
+    <span class="concept-tag">110%</span>
+    <div class="solution">
+        <div class="solution-step">Total = 110% of original. Equation: \(1.10 \times x = 44\).</div>
+        <div class="solution-step">\(x = \dfrac{44}{1.10} = \$40\).</div>
+    </div>
+    <div class="final-answer">$40</div>
+</div>
+
+<div class="level-divider">▼ &nbsp; CHALLENGING SECTION &nbsp; ▼</div>
+
+<!-- ============================ PART E ============================ -->
+<div class="part-header challenge-header">Part E — Markup <span class="lvl challenge">CHALLENGE</span></div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 11</div>
+    <div class="problem-text">Nike sneakers cost Nike $20 to make; customers pay $150. Find percent of markup.</div>
+    <span class="concept-tag warn">Markup</span>
+    <span class="concept-tag warn">Lecture Example</span>
+    <div class="solution">
+        <div class="solution-step">Change: \(\$150 - \$20 = \$130\).</div>
+        <div class="solution-step">Original (cost): \(\$20\).</div>
+        <div class="solution-step">Set up: \(\dfrac{130}{20} = \dfrac{X}{100}\) &rArr; \(X = \dfrac{130 \times 100}{20} = 650\).</div>
+    </div>
+    <div class="final-answer">650% Markup</div>
+</div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 12</div>
+    <div class="problem-text">Backpack cost to store: $40. Selling price: $100. Find percent of markup.</div>
+    <span class="concept-tag warn">Markup</span>
+    <div class="solution">
+        <div class="solution-step">Change: \(\$100 - \$40 = \$60\).</div>
+        <div class="solution-step">Set up: \(\dfrac{60}{40} = \dfrac{X}{100}\) &rArr; \(X = 150\).</div>
+    </div>
+    <div class="final-answer">150% Markup</div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 4 ============================ -->
+<div class="page page-break">
+
+<!-- ============================ PART F ============================ -->
+<div class="part-header challenge-header">Part F — Find the Rate <span class="lvl challenge">CHALLENGE</span></div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 13</div>
+    <div class="problem-text">Marked $40, total cost $42. Find sales tax rate.</div>
+    <span class="concept-tag warn">Find Rate</span>
+    <span class="concept-tag warn">Tax</span>
+    <div class="solution">
+        <div class="solution-step">Tax amount: \(\$42 - \$40 = \$2\).</div>
+        <div class="solution-step">Set up: \(\dfrac{2}{40} = \dfrac{X}{100}\) &rArr; \(X = 5\).</div>
+    </div>
+    <div class="final-answer">5% Sales Tax</div>
+</div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 14</div>
+    <div class="problem-text">List $120, sale $90. Find rate of discount.</div>
+    <span class="concept-tag warn">Find Rate</span>
+    <span class="concept-tag warn">Discount</span>
+    <div class="solution">
+        <div class="solution-step">Discount amount: \(\$120 - \$90 = \$30\).</div>
+        <div class="solution-step">Set up: \(\dfrac{30}{120} = \dfrac{X}{100}\) &rArr; \(X = 25\).</div>
+    </div>
+    <div class="final-answer">25% Discount</div>
+</div>
+
+<!-- ============================ PART G ============================ -->
+<div class="part-header challenge-header">Part G — Multi-Step Word Problems <span class="lvl challenge">CHALLENGE</span></div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 15</div>
+    <div class="problem-text">Bicycle $200. 25% off, then 6% tax on discounted price. Find final total.</div>
+    <span class="concept-tag warn">Discount → Tax</span>
+    <div class="solution">
+        <div class="solution-step"><strong>Step 1 — Discount:</strong> \(0.25 \times \$200 = \$50\). Sale: \(\$200 - \$50 = \$150\).</div>
+        <div class="solution-step"><strong>Step 2 — Tax on sale:</strong> \(0.06 \times \$150 = \$9\).</div>
+        <div class="solution-step"><strong>Step 3 — Final:</strong> \(\$150 + \$9 = \$159\).</div>
+    </div>
+    <div class="final-answer">$159</div>
+</div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 16</div>
+    <div class="problem-text">Guitar $300. 30% off, then 10% tax on discounted price. Find final total.</div>
+    <span class="concept-tag warn">Discount → Tax</span>
+    <div class="solution">
+        <div class="solution-step"><strong>Step 1 — Discount:</strong> \(0.30 \times \$300 = \$90\). Sale: \(\$300 - \$90 = \$210\).</div>
+        <div class="solution-step"><strong>Step 2 — Tax:</strong> \(0.10 \times \$210 = \$21\).</div>
+        <div class="solution-step"><strong>Step 3 — Final:</strong> \(\$210 + \$21 = \$231\).</div>
+    </div>
+    <div class="final-answer">$231</div>
+</div>
+
+</div>
+
+<!-- ============================ PAGE 5 ============================ -->
+<div class="page page-break">
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 17</div>
+    <div class="problem-text">Book on sale for 30% off, you pay $63. Find original price.</div>
+    <span class="concept-tag warn">Reverse Discount</span>
+    <span class="concept-tag warn">70% remains</span>
+    <div class="solution">
+        <div class="solution-step">After 30% off, you pay 70% of original.</div>
+        <div class="solution-step">Equation: \(0.70 \times x = 63\) &rArr; \(x = \dfrac{63}{0.70} = \$90\).</div>
+        <div class="solution-step"><em>Check:</em> 30% of $90 = $27; $90 &minus; $27 = $63 ✓.</div>
+    </div>
+    <div class="final-answer">$90</div>
+</div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 18</div>
+    <div class="problem-text">72 speeding tickets to 36. Increase or decrease? Find percent of change.</div>
+    <span class="concept-tag warn">Percent Decrease</span>
+    <span class="concept-tag warn">Halved</span>
+    <div class="solution">
+        <div class="solution-step">Change: \(72 - 36 = 36\) (<strong>decrease</strong>).</div>
+        <div class="solution-step">Set up: \(\dfrac{36}{72} = \dfrac{X}{100}\) &rArr; \(X = 50\).</div>
+        <div class="solution-step"><em>Note:</em> Halving = 50% decrease.</div>
+    </div>
+    <div class="final-answer">50% Decrease</div>
+</div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 19</div>
+    <div class="problem-text">Store A: $50, 30% off. Store B: $60, 40% off. Which has the lower sale price, by how much?</div>
+    <span class="concept-tag warn">Compare</span>
+    <span class="concept-tag warn">Better Buy</span>
+    <div class="solution">
+        <div class="solution-step"><strong>Store A:</strong> Discount = \(0.30 \times \$50 = \$15\). Sale: \(\$50 - \$15 = \$35\).</div>
+        <div class="solution-step"><strong>Store B:</strong> Discount = \(0.40 \times \$60 = \$24\). Sale: \(\$60 - \$24 = \$36\).</div>
+        <div class="solution-step"><strong>Compare:</strong> \(\$36 - \$35 = \$1\). Store A is cheaper by $1.</div>
+        <div class="solution-step"><em>Lesson:</em> A bigger discount % doesn't always win — the original price matters too.</div>
+    </div>
+    <div class="final-answer">Store A wins by $1 (Sale = $35)</div>
+</div>
+
+<div class="answer-block challenge">
+    <div class="problem-header">Problem 20</div>
+    <div class="problem-text">Jacket $200. 25% off, then extra 10% off the sale price (coupon). Find final price.</div>
+    <span class="concept-tag warn">Stacked Discounts</span>
+    <div class="solution">
+        <div class="solution-step"><strong>Step 1 — First discount (25%):</strong> \(0.25 \times \$200 = \$50\). Sale: \(\$200 - \$50 = \$150\).</div>
+        <div class="solution-step"><strong>Step 2 — Coupon (10% off the new $150):</strong> \(0.10 \times \$150 = \$15\). New price: \(\$150 - \$15 = \$135\).</div>
+        <div class="solution-step"><em>Trap to avoid:</em> 25% + 10% is NOT the same as 35% off ($130). The coupon is taken on the already-discounted price, not on the original. Stacked discounts always come out higher than the simple sum.</div>
+    </div>
+    <div class="final-answer">$135</div>
+</div>
+
+<div class="footer">
+    Created by Newton School 2026-04-28 &copy; Copyright<br>
+    2175 Lemoine Ave Suite 304, Fort Lee, NJ 07650 &nbsp;·&nbsp; (201) 252-7252 &nbsp;·&nbsp; www.newtonschool.net
+</div>
+
+</div>
+
+</body>
+</html>

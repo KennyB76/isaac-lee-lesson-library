@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isaac Lee — ANSWER KEY: Angles, Quadrilaterals &amp; Polygons</title>
+
+<script>
+window.MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+    startup: { ready: () => { MathJax.startup.defaultReady(); } }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<style>
+/* =========================================================================
+   INLINE CSS BUNDLE: base-print + theme-boy + level-middle  (Answer Key)
+   ========================================================================= */
+
+/* --- base-print.css --- */
+@page { size: letter; margin: 0.5in; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fafafa; }
+body { font-family: 'Times New Roman', serif; color: #000; }
+.page { max-width: 720px; margin: 0 auto; padding: 70px 50px 40px 50px; background: #fff; }
+.page-break { page-break-before: always; break-before: page; }
+@media print {
+    html, body { background: #fff; }
+    .page { max-width: none; padding: 0.7in 0.6in 0.5in 0.6in; margin: 0; box-shadow: none; }
+    .problem, .answer-block, .reminder, .parent-note, .example, .word-problem {
+        page-break-inside: avoid; break-inside: avoid;
+    }
+    .part-header, .directions, .problem-header, h1, h2, h3 {
+        page-break-after: avoid; break-after: avoid;
+    }
+    .page-break { page-break-before: always; break-before: page; }
+    .footer { display: none !important; }
+}
+
+/* --- theme-boy.css --- */
+:root {
+    --color-primary:        #1565c0;
+    --color-primary-dark:   #0d47a1;
+    --color-accent:         #00838f;
+    --color-header-border:  #1565c0;
+    --color-final-answer:   #2e7d32;
+    --color-warning:        #c62828;
+    --color-parent-note:    #283593;
+    --color-tag-bg:         transparent;
+    --color-tag-border:     #1565c0;
+    --color-tag-text:       #1565c0;
+    --color-muted:          #555;
+    --color-rule:           #ccc;
+}
+
+/* --- level-middle.css --- */
+body { font-family: 'Times New Roman', serif; font-size: 10pt; line-height: 1.5; }
+.header { text-align: center; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 2px solid var(--color-header-border); }
+.school-name { font-size: 9pt; letter-spacing: 4px; color: var(--color-primary); font-weight: bold; }
+.subject-tag, .key-tag { display: inline-block; padding: 2px 10px; font-size: 8pt; letter-spacing: 2px; margin: 5px 3px 8px 3px; font-weight: bold; }
+.subject-tag { border: 1.5px solid var(--color-primary); color: var(--color-primary); }
+.key-tag { border: 1.5px solid var(--color-warning); color: var(--color-warning); }
+h1 { font-size: 15pt; margin: 6px 0 10px 0; font-weight: bold; line-height: 1.3; }
+.info { display: flex; justify-content: space-between; font-size: 10pt; margin-top: 6px; }
+.standard { font-size: 8pt; font-style: italic; margin-top: 5px; color: var(--color-muted); }
+.part-header { font-size: 12pt; font-weight: bold; color: var(--color-primary); margin: 22px 0 6px 0; padding-bottom: 3px; border-bottom: 2px solid var(--color-primary); }
+.footer { text-align: center; font-size: 8pt; color: #666; border-top: 1px solid var(--color-rule); margin-top: 22px; padding-top: 6px; }
+
+/* --- Answer-key blocks --- */
+.answer-block { margin: 12px 0; padding: 10px 14px; border: 1px solid #ddd; border-radius: 4px; page-break-inside: avoid; break-inside: avoid; }
+.problem-header { font-weight: bold; color: var(--color-primary); font-size: 11pt; margin-bottom: 5px; }
+.problem-text { font-size: 10pt; padding: 6px 10px; background: #f7f7f7; border-left: 3px solid #bbb; margin-bottom: 8px; line-height: 1.5; }
+.concept-tag { display: inline-block; font-size: 8pt; padding: 2px 8px; margin: 2px 3px 5px 0; border: 1px solid var(--color-tag-border); color: var(--color-tag-text); border-radius: 10px; }
+.solution { margin: 6px 0; padding-left: 8px; border-left: 3px solid var(--color-final-answer); }
+.solution-step { margin: 4px 0; font-size: 10pt; line-height: 1.6; }
+.final-answer { display: inline-block; border: 2px solid var(--color-final-answer); color: var(--color-final-answer); font-weight: bold; padding: 4px 12px; border-radius: 4px; margin-top: 6px; font-size: 11pt; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===== HEADER ===== -->
+  <div class="header">
+    <div class="school-name">NEWTON SCHOOL</div>
+    <div class="subject-tag">MATH · GEOMETRY</div>
+    <div class="key-tag">ANSWER KEY</div>
+    <h1>Angles, Quadrilaterals &amp; Polygons</h1>
+    <div class="info">
+      <span><strong>Student:</strong> Isaac Lee</span>
+      <span><strong>Date:</strong> 2026-05-12</span>
+    </div>
+    <div class="standard">
+      <strong>Standard:</strong> CCSS.MATH.CONTENT.7.G.A.2 / 7.G.B.5
+    </div>
+  </div>
+
+  <!-- ===== PART A ===== -->
+  <div class="part-header">Part A — Parallel Lines Cut by a Transversal</div>
+
+  <!-- #1 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 1</div>
+    <div class="problem-text">
+      Given \(m\angle 1 = 65°\), find \(m\angle 2\), \(m\angle 5\), and \(m\angle 8\).
+    </div>
+    <span class="concept-tag">Vertical Angles</span>
+    <span class="concept-tag">Corresponding Angles</span>
+    <span class="concept-tag">Alternate Exterior Angles</span>
+    <div class="solution">
+      <div class="solution-step">\(\angle 1\) and \(\angle 2\) are a <strong>linear pair</strong> (supplementary):</div>
+      <div class="solution-step">\(m\angle 2 = 180° - 65° = \mathbf{115°}\)</div>
+      <div class="solution-step">\(\angle 1\) and \(\angle 5\) are <strong>corresponding angles</strong> (equal when lines are parallel):</div>
+      <div class="solution-step">\(m\angle 5 = 65°\)</div>
+      <div class="solution-step">\(\angle 1\) and \(\angle 8\) are <strong>alternate exterior angles</strong> (equal when lines are parallel):</div>
+      <div class="solution-step">\(m\angle 8 = 65°\)</div>
+    </div>
+    <div class="final-answer">\(m\angle 2 = 115°\),&ensp;\(m\angle 5 = 65°\),&ensp;\(m\angle 8 = 65°\)</div>
+  </div>
+
+  <!-- #2 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 2</div>
+    <div class="problem-text">
+      \(\angle 4\) and \(\angle 6\): type of angle pair, equal or supplementary, and \(m\angle 6\) if \(m\angle 4 = 112°\).
+    </div>
+    <span class="concept-tag">Consecutive Interior Angles</span>
+    <span class="concept-tag">Co-Interior (Same-Side Interior)</span>
+    <div class="solution">
+      <div class="solution-step">(a) \(\angle 4\) and \(\angle 6\) are <strong>consecutive (co-interior / same-side interior) angles</strong> — they are on the <em>same</em> side of the transversal, between the parallel lines.</div>
+      <div class="solution-step">(b) They are <strong>supplementary</strong>: \(m\angle 4 + m\angle 6 = 180°\)</div>
+      <div class="solution-step">(c) \(m\angle 6 = 180° - 112° = 68°\)</div>
+    </div>
+    <div class="final-answer">Consecutive interior (co-interior); Supplementary;&ensp;\(m\angle 6 = 68°\)</div>
+  </div>
+
+  <!-- #3 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 3</div>
+    <div class="problem-text">
+      Alternate interior angles: \(m\angle 3 = (2x+10)°\) and \(m\angle 5 = (3x-20)°\). Find \(x\) and each angle.
+    </div>
+    <span class="concept-tag">Alternate Interior Angles</span>
+    <span class="concept-tag">Solving Equations</span>
+    <div class="solution">
+      <div class="solution-step">Alternate interior angles are equal:</div>
+      <div class="solution-step">\(2x + 10 = 3x - 20\)</div>
+      <div class="solution-step">Subtract \(2x\) from both sides: \(10 = x - 20\)</div>
+      <div class="solution-step">Add 20 to both sides: \(x = 30\)</div>
+      <div class="solution-step">Check: \(m\angle 3 = 2(30)+10 = 70°\) &ensp; \(m\angle 5 = 3(30)-20 = 70°\) ✓</div>
+    </div>
+    <div class="final-answer">\(x = 30\),&ensp;\(m\angle 3 = m\angle 5 = 70°\)</div>
+  </div>
+
+  <!-- ===== PART B ===== -->
+  <div class="part-header page-break">Part B — Quadrilaterals</div>
+
+  <!-- #4 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 4</div>
+    <div class="problem-text">
+      Parallelogram \(ABCD\), \(m\angle A = 72°\). Find \(m\angle B\), \(m\angle C\), \(m\angle D\).
+    </div>
+    <span class="concept-tag">Parallelogram</span>
+    <span class="concept-tag">Opposite Angles ≅</span>
+    <span class="concept-tag">Consecutive Angles Supplementary</span>
+    <div class="solution">
+      <div class="solution-step">In a parallelogram, <strong>opposite angles are equal</strong>: \(m\angle C = m\angle A = 72°\)</div>
+      <div class="solution-step"><strong>Consecutive angles are supplementary</strong>: \(m\angle B = 180° - 72° = 108°\)</div>
+      <div class="solution-step">Opposite: \(m\angle D = m\angle B = 108°\)</div>
+      <div class="solution-step">Check: \(72 + 108 + 72 + 108 = 360°\) ✓</div>
+    </div>
+    <div class="final-answer">\(m\angle B = 108°\),&ensp;\(m\angle C = 72°\),&ensp;\(m\angle D = 108°\)</div>
+  </div>
+
+  <!-- #5 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 5</div>
+    <div class="problem-text">
+      Trapezoid \(PQRS\): \(m\angle P = 110°\). Find \(m\angle S\) on the same leg.
+    </div>
+    <span class="concept-tag">Trapezoid</span>
+    <span class="concept-tag">Co-Interior Angles</span>
+    <div class="solution">
+      <div class="solution-step">In a trapezoid, angles on the <strong>same leg</strong> (between the parallel sides) are <strong>co-interior (supplementary)</strong>:</div>
+      <div class="solution-step">\(m\angle P + m\angle S = 180°\)</div>
+      <div class="solution-step">\(m\angle S = 180° - 110° = 70°\)</div>
+    </div>
+    <div class="final-answer">\(m\angle S = 70°\)</div>
+  </div>
+
+  <!-- #6 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 6</div>
+    <div class="problem-text">
+      4 congruent sides + 4 right angles. Name it and circle all applicable names.
+    </div>
+    <span class="concept-tag">Square</span>
+    <span class="concept-tag">Quadrilateral Hierarchy</span>
+    <div class="solution">
+      <div class="solution-step">(a) This is a <strong>Square</strong>.</div>
+      <div class="solution-step">(b) A square is <em>also</em> a rectangle (4 right angles ✓), a rhombus (4 ≅ sides ✓), a parallelogram (2 pairs parallel sides ✓).</div>
+      <div class="solution-step">Trapezoid also applies under the <em>inclusive</em> definition (has ≥ 1 pair of parallel sides).</div>
+    </div>
+    <div class="final-answer">(a) Square &ensp;(b) Parallelogram, Rectangle, Rhombus, Square (and Trapezoid under inclusive def.)</div>
+  </div>
+
+  <!-- ===== PART C ===== -->
+  <div class="part-header page-break">Part C — Polygon Angle Sum Theorem</div>
+
+  <!-- #7 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 7</div>
+    <div class="problem-text">
+      Interior angle sum of a hexagon (\(n=6\)) using \((n-2)\times 180°\). Draw diagonals from one vertex.
+    </div>
+    <span class="concept-tag">Polygon Angle Sum</span>
+    <span class="concept-tag">Triangle Method</span>
+    <div class="solution">
+      <div class="solution-step">\((n-2) \times 180° = (6-2) \times 180° = 4 \times 180°\)</div>
+      <div class="solution-step">\(= 720°\)</div>
+      <div class="solution-step">Drawing diagonals from one vertex of the hexagon creates <strong>4 triangles</strong>. Each triangle has 180°, so \(4 \times 180° = 720°\). ✓</div>
+    </div>
+    <div class="final-answer">Interior angle sum \(= 720°\)</div>
+  </div>
+
+  <!-- #8 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 8</div>
+    <div class="problem-text">
+      Each interior angle of a regular octagon (\(n=8\)).
+    </div>
+    <span class="concept-tag">Regular Polygon</span>
+    <span class="concept-tag">Each Interior Angle Formula</span>
+    <div class="solution">
+      <div class="solution-step">Total interior angle sum: \((8-2)\times 180° = 6 \times 180° = 1080°\)</div>
+      <div class="solution-step">Divide by the number of angles (8):</div>
+      <div class="solution-step">\(\dfrac{1080°}{8} = 135°\)</div>
+    </div>
+    <div class="final-answer">Each interior angle \(= 135°\)</div>
+  </div>
+
+  <!-- #9 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 9</div>
+    <div class="problem-text">
+      Interior angle sum \(= 1260°\). Find \(n\) and name the polygon.
+    </div>
+    <span class="concept-tag">Reverse Angle Sum</span>
+    <span class="concept-tag">Solving for n</span>
+    <div class="solution">
+      <div class="solution-step">\((n-2)\times 180 = 1260\)</div>
+      <div class="solution-step">Divide both sides by 180: \(n - 2 = \dfrac{1260}{180} = 7\)</div>
+      <div class="solution-step">Add 2: \(n = 9\)</div>
+      <div class="solution-step">A polygon with 9 sides is a <strong>nonagon</strong>.</div>
+    </div>
+    <div class="final-answer">\(n = 9\) — Nonagon</div>
+  </div>
+
+  <!-- #10 -->
+  <div class="answer-block">
+    <div class="problem-header">Problem 10</div>
+    <div class="problem-text">
+      Each exterior angle of a regular pentagon (\(n=5\)). Bonus: each interior angle.
+    </div>
+    <span class="concept-tag">Exterior Angles</span>
+    <span class="concept-tag">360° Rule</span>
+    <span class="concept-tag">Interior + Exterior = 180°</span>
+    <div class="solution">
+      <div class="solution-step">All exterior angles of any polygon sum to 360°.</div>
+      <div class="solution-step">Each exterior angle (regular pentagon): \(\dfrac{360°}{5} = 72°\)</div>
+      <div class="solution-step"><strong>Bonus:</strong> Each interior angle \(= 180° - 72° = 108°\)</div>
+      <div class="solution-step">Confirm using formula: \(\dfrac{(5-2)\times 180°}{5} = \dfrac{540°}{5} = 108°\) ✓</div>
+    </div>
+    <div class="final-answer">Each exterior angle \(= 72°\);&ensp;Each interior angle \(= 108°\)</div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="footer">
+    Created by Newton School 2026-05-12 &copy; Copyright — ANSWER KEY (Teacher Use Only)
+  </div>
+
+</div>
+</body>
+</html>

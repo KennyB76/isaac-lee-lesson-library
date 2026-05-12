@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polygon Angle Cutter — Newton School</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal:        #0d9488;
+    --teal-light:  #99f6e4;
+    --teal-dark:   #0f766e;
+    --cream:       #fef3c7;
+    --cream-dark:  #fde68a;
+    --bg:          #f8fffe;
+    --panel:       #ffffff;
+    --border:      #d1fae5;
+    --text:        #1f2937;
+    --text-muted:  #6b7280;
+    --shadow:      0 2px 12px rgba(13,148,136,0.10);
+    --radius:      14px;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* ─── Layout ─────────────────────────────────────────────── */
+  .page {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 18px 10px;
+    gap: 12px;
+  }
+
+  /* ─── Header ─────────────────────────────────────────────── */
+  header {
+    text-align: center;
+  }
+  .brand {
+    font-size: 0.62rem;
+    letter-spacing: 0.4em;
+    color: var(--teal);
+    font-weight: 700;
+    margin-bottom: 4px;
+    opacity: 0.55;
+    text-transform: uppercase;
+  }
+  header h1 {
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    font-weight: 800;
+    color: var(--teal-dark);
+    line-height: 1.1;
+  }
+  header .subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  /* ─── Main grid ───────────────────────────────────────────── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: auto 1fr;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  /* ─── Controls row (spans both columns) ──────────────────── */
+  .controls {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 18px;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+  }
+  .slider-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 180px;
+  }
+  .slider-group label {
+    font-weight: 700;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    color: var(--teal-dark);
+  }
+  #nSlider {
+    flex: 1;
+    accent-color: var(--teal);
+    height: 6px;
+    cursor: pointer;
+  }
+  #nDisplay {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--teal);
+    min-width: 34px;
+    text-align: center;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn-cut    { background: #0d9488; color: #fff; box-shadow: 0 3px 10px rgba(13,148,136,0.3); }
+  .btn-walk   { background: #f59e0b; color: #fff; box-shadow: 0 3px 10px rgba(245,158,11,0.3); }
+  .btn-reset  { background: #e5e7eb; color: #374151; }
+  .btn:hover  { filter: brightness(1.07); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ─── Canvas panel ───────────────────────────────────────── */
+  .canvas-wrap {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  #polyCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ─── Right panel ─────────────────────────────────────────── */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  /* Info card */
+  .info-card {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+  }
+  .info-card h2 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--teal-dark);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px dashed #e5e7eb;
+    font-size: 0.85rem;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .label { color: var(--text-muted); }
+  .info-row .value {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .info-row .value.big {
+    font-size: 1.25rem;
+    color: var(--teal);
+  }
+  .info-row .value.each {
+    font-size: 1rem;
+    color: #f59e0b;
+  }
+
+  /* Log card */
+  .log-card {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+  }
+  .log-card h2 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin-bottom: 8px;
+    letter-spacing: 0.03em;
+  }
+  .log-entry {
+    font-size: 0.8rem;
+    padding: 4px 0;
+    border-bottom: 1px solid #f3f4f6;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: fadeIn 0.3s ease;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .log-total {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--teal);
+    text-align: right;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* method badge */
+  .method-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .badge-cut  { background: #ccfbf1; color: var(--teal-dark); }
+  .badge-walk { background: #fef3c7; color: #92400e; }
+
+  /* Formula box */
+  .formula {
+    background: var(--cream);
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: #78350f;
+    margin-top: 4px;
+    line-height: 1.55;
+  }
+  .formula strong { color: var(--teal-dark); font-size: 0.95rem; }
+
+  /* Responsive fallback */
+  @media (max-width: 700px) {
+    .main { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+    .canvas-wrap { min-height: 280px; }
+    .log-card { max-height: 180px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <div class="brand">Newton School</div>
+    <h1>Polygon Angle Cutter</h1>
+    <p class="subtitle">Two ways to find the total interior angle of any polygon</p>
+  </header>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="slider-group">
+        <label for="nSlider">Sides (n):</label>
+        <input type="range" id="nSlider" min="3" max="12" value="6">
+        <span id="nDisplay">6</span>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-cut"  id="btnCut">🔪 Cut into Triangles</button>
+        <button class="btn btn-walk" id="btnWalk">🧭 Walk Around</button>
+        <button class="btn btn-reset" id="btnReset">🔄 Reset</button>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div class="canvas-wrap">
+      <canvas id="polyCanvas"></canvas>
+    </div>
+
+    <!-- Right panel -->
+    <div class="right-panel">
+
+      <div class="info-card">
+        <h2>📐 <span id="shapeName">Hexagon</span></h2>
+        <div class="info-row">
+          <span class="label">Number of sides</span>
+          <span class="value" id="infoSides">6</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Triangles (Method 1)</span>
+          <span class="value" id="infoTri">4</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Interior angle sum</span>
+          <span class="value big" id="infoSum">720°</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Each interior angle</span>
+          <span class="value each" id="infoEach">120°</span>
+        </div>
+        <div class="formula" id="formulaBox">
+          <strong>(n − 2) × 180°</strong><br>
+          (6 − 2) × 180° = <strong>4 × 180° = 720°</strong>
+        </div>
+      </div>
+
+      <div class="log-card" id="logCard">
+        <h2 id="logTitle">Steps will appear here</h2>
+        <div id="logList"></div>
+        <div class="log-total" id="logTotal"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── State ────────────────────────────────────────────────────
+const canvas  = document.getElementById('polyCanvas');
+const ctx     = canvas.getContext('2d');
+let n         = 6;
+let animId    = null;   // cancelable animation
+let busy      = false;
+
+// Triangle fill colors
+const TRI_COLORS = [
+  '#a7f3d0','#6ee7b7','#34d399','#10b981',
+  '#059669','#047857','#065f46','#064e3b',
+  '#99f6e4','#5eead4'
+];
+const EXT_COLOR  = '#f59e0b';
+const TURTLE_CLR = '#dc2626';
+
+// ─── Helpers ──────────────────────────────────────────────────
+function resize() {
+  const wrap = canvas.parentElement;
+  canvas.width  = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+  draw();
+}
+
+function polyVerts(sides, cx, cy, r) {
+  const pts = [];
+  for (let i = 0; i < sides; i++) {
+    const a = -Math.PI/2 + (2*Math.PI*i)/sides;
+    pts.push({ x: cx + r*Math.cos(a), y: cy + r*Math.sin(a) });
+  }
+  return pts;
+}
+
+function polyRadius() {
+  return Math.min(canvas.width, canvas.height) * 0.38;
+}
+
+function polyCenter() {
+  return { cx: canvas.width/2, cy: canvas.height/2 };
+}
+
+const SHAPE_NAMES = {
+  3:'Triangle', 4:'Quadrilateral', 5:'Pentagon',
+  6:'Hexagon',  7:'Heptagon',      8:'Octagon',
+  9:'Nonagon', 10:'Decagon',      11:'Hendecagon', 12:'Dodecagon'
+};
+
+// ─── UI Update ────────────────────────────────────────────────
+function updateInfo(sides) {
+  const name = SHAPE_NAMES[sides] || `${sides}-gon`;
+  const tris = sides - 2;
+  const sum  = tris * 180;
+  const each = (sum / sides).toFixed(1);
+  document.getElementById('shapeName').textContent  = name;
+  document.getElementById('infoSides').textContent  = sides;
+  document.getElementById('infoTri').textContent    = tris;
+  document.getElementById('infoSum').textContent    = sum + '°';
+  document.getElementById('infoEach').textContent   = each + '°';
+  document.getElementById('formulaBox').innerHTML   =
+    `<strong>(n − 2) × 180°</strong><br>` +
+    `(${sides} − 2) × 180° = <strong>${tris} × 180° = ${sum}°</strong>`;
+}
+
+function clearLog() {
+  document.getElementById('logList').innerHTML = '';
+  document.getElementById('logTotal').textContent = '';
+  document.getElementById('logTitle').textContent = 'Steps will appear here';
+}
+
+function addLogEntry(html, color) {
+  const list = document.getElementById('logList');
+  const el   = document.createElement('div');
+  el.className = 'log-entry';
+  el.innerHTML = `<div class="log-dot" style="background:${color}"></div><span>${html}</span>`;
+  list.appendChild(el);
+  list.parentElement.scrollTop = list.parentElement.scrollHeight;
+}
+
+function setLogTotal(html) {
+  document.getElementById('logTotal').innerHTML = html;
+}
+
+// ─── Base Draw ────────────────────────────────────────────────
+function draw(verts, fillTriIdx, diagCount, extAngles, turtlePt, turtleAngle) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const { cx, cy } = polyCenter();
+  const r = polyRadius();
+  const pts = verts || polyVerts(n, cx, cy, r);
+
+  // Background polygon fill
+  ctx.beginPath();
+  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+  ctx.closePath();
+  ctx.fillStyle   = '#f0fdfb';
+  ctx.fill();
+  ctx.strokeStyle = '#0d9488';
+  ctx.lineWidth   = 2.5;
+  ctx.stroke();
+
+  // Filled triangles (Method 1)
+  if (fillTriIdx !== undefined && fillTriIdx >= 0) {
+    for (let i = 0; i <= fillTriIdx; i++) {
+      const A = pts[0], B = pts[i+1], C = pts[i+2];
+      ctx.beginPath();
+      ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y);
+      ctx.closePath();
+      ctx.fillStyle = TRI_COLORS[i % TRI_COLORS.length] + 'bb';
+      ctx.fill();
+    }
+  }
+
+  // Diagonals drawn so far (Method 1)
+  if (diagCount !== undefined) {
+    ctx.strokeStyle = '#0f766e';
+    ctx.lineWidth   = 1.8;
+    ctx.setLineDash([6, 4]);
+    for (let i = 1; i < diagCount; i++) {
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      ctx.lineTo(pts[i+1].x, pts[i+1].y);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+  }
+
+  // Exterior angle arcs (Method 2)
+  if (extAngles) {
+    extAngles.forEach(({ pt, from, to, color }) => {
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 22, from, to, false);
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = 2.5;
+      ctx.stroke();
+    });
+  }
+
+  // Turtle (Method 2)
+  if (turtlePt) {
+    const sz = 11;
+    ctx.save();
+    ctx.translate(turtlePt.x, turtlePt.y);
+    ctx.rotate(turtleAngle);
+    ctx.beginPath();
+    ctx.moveTo(0, -sz);
+    ctx.lineTo(sz*0.6, sz*0.7);
+    ctx.lineTo(-sz*0.6, sz*0.7);
+    ctx.closePath();
+    ctx.fillStyle = TURTLE_CLR;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Vertex dots
+  pts.forEach((p, i) => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, 2*Math.PI);
+    ctx.fillStyle   = i === 0 && diagCount !== undefined ? '#0d9488' : '#fff';
+    ctx.strokeStyle = '#0d9488';
+    ctx.lineWidth   = 2;
+    ctx.fill(); ctx.stroke();
+  });
+
+  // Vertex labels
+  const labelR = r + 20;
+  pts.forEach((p, i) => {
+    const a = -Math.PI/2 + (2*Math.PI*i)/n;
+    const lx = cx + labelR*Math.cos(a);
+    const ly = cy + labelR*Math.sin(a);
+    ctx.fillStyle = '#374151';
+    ctx.font      = 'bold 12px Inter, system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String.fromCharCode(65+i), lx, ly);
+  });
+
+  // Center formula label
+  ctx.fillStyle = '#0d9488cc';
+  ctx.font      = 'bold 14px Inter, system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(`(${n}−2)×180° = ${(n-2)*180}°`, cx, cy);
+}
+
+// ─── Slider ───────────────────────────────────────────────────
+const slider  = document.getElementById('nSlider');
+const nDisp   = document.getElementById('nDisplay');
+
+slider.addEventListener('input', () => {
+  if (busy) return;
+  n = parseInt(slider.value);
+  nDisp.textContent = n;
+  updateInfo(n);
+  clearLog();
+  draw();
+});
+
+// ─── Reset ────────────────────────────────────────────────────
+document.getElementById('btnReset').addEventListener('click', () => {
+  cancelAnim();
+  clearLog();
+  draw();
+  setBusy(false);
+});
+
+// ─── Cancel / Busy helpers ───────────────────────────────────
+function cancelAnim() {
+  if (animId) { clearTimeout(animId); animId = null; }
+}
+function setBusy(v) {
+  busy = v;
+  document.getElementById('btnCut').disabled  = v;
+  document.getElementById('btnWalk').disabled = v;
+  slider.disabled = v;
+}
+
+// ─── Method 1: Cut into Triangles ────────────────────────────
+document.getElementById('btnCut').addEventListener('click', () => {
+  if (busy) return;
+  cancelAnim();
+  clearLog();
+  setBusy(true);
+
+  document.getElementById('logTitle').textContent = '🔪 Triangle Cut — Method 1';
+  document.getElementById('logList').innerHTML =
+    `<div class="log-entry"><div class="log-dot" style="background:#0d9488"></div>` +
+    `<span>Start at vertex A. Draw diagonals…</span></div>`;
+
+  const { cx, cy } = polyCenter();
+  const r   = polyRadius();
+  const pts = polyVerts(n, cx, cy, r);
+  const totalTri = n - 2;
+  let   step = 0; // step goes 0 .. totalTri-1
+
+  function doStep() {
+    draw(pts, step, step + 1); // fill tri 0..step, diags 0..step
+
+    const sum = (step + 1) * 180;
+    addLogEntry(
+      `Triangle ${step+1}: <strong>+180°</strong> → total so far = <strong>${sum}°</strong>`,
+      TRI_COLORS[step % TRI_COLORS.length]
+    );
+
+    step++;
+    if (step < totalTri) {
+      animId = setTimeout(doStep, 900);
+    } else {
+      setLogTotal(`Sum = ${totalTri} × 180° = <strong>${totalTri*180}°</strong>`);
+      setBusy(false);
+    }
+  }
+
+  draw(pts, -1, 0);
+  animId = setTimeout(doStep, 400);
+});
+
+// ─── Method 2: Walk Around ────────────────────────────────────
+document.getElementById('btnWalk').addEventListener('click', () => {
+  if (busy) return;
+  cancelAnim();
+  clearLog();
+  setBusy(true);
+
+  document.getElementById('logTitle').textContent = '🧭 Walk Around — Method 2';
+  document.getElementById('logList').innerHTML =
+    `<div class="log-entry"><div class="log-dot" style="background:#f59e0b"></div>` +
+    `<span>Walk each side. At each corner, <em>turn</em> by exterior angle.</span></div>`;
+
+  const { cx, cy } = polyCenter();
+  const r   = polyRadius();
+  const pts = polyVerts(n, cx, cy, r);
+
+  const extAngle = 360 / n;           // degrees each turn
+  const extRad   = (extAngle * Math.PI) / 180;
+
+  // Pre-compute incoming edge angle at each vertex
+  function edgeAngle(a, b) {
+    return Math.atan2(b.y - a.y, b.x - a.x);
+  }
+
+  const walkedExt   = [];  // { pt, from, to, color, deg }
+  const ARC_COLORS  = ['#f59e0b','#ec4899','#8b5cf6','#3b82f6',
+                        '#10b981','#ef4444','#f97316','#14b8a6',
+                        '#6366f1','#a855f7','#84cc16','#06b6d4'];
+  let   step = 0;
+  let   runningSum = 0;
+
+  function doWalkStep() {
+    // vertex index we're arriving at
+    const i    = step % n;
+    const prev = pts[(i - 1 + n) % n];
+    const curr = pts[i];
+    const next = pts[(i + 1) % n];
+
+    const incoming = edgeAngle(prev, curr);
+    const outgoing = edgeAngle(curr, next);
+
+    // arc: from incoming direction (reversed) to outgoing
+    const arcFrom = incoming;         // direction we came FROM
+    const arcTo   = outgoing;
+
+    walkedExt.push({
+      pt:    curr,
+      from:  arcFrom,
+      to:    arcFrom + extRad * (extRad > 0 ? 1 : -1),
+      color: ARC_COLORS[step % ARC_COLORS.length],
+      deg:   extAngle
+    });
+
+    runningSum += extAngle;
+
+    // Turtle heading = outgoing edge direction
+    const nextI   = (i + 1) % n;
+    const turtlePt = curr;
+    const turtleA  = outgoing - Math.PI/2;
+
+    draw(pts, undefined, undefined, walkedExt, turtlePt, turtleA);
+
+    addLogEntry(
+      `Vertex ${String.fromCharCode(65+i)}: turn <strong>${extAngle.toFixed(1)}°</strong> → total = <strong>${runningSum.toFixed(1)}°</strong>`,
+      ARC_COLORS[step % ARC_COLORS.length]
+    );
+
+    step++;
+    if (step < n) {
+      animId = setTimeout(doWalkStep, 900);
+    } else {
+      // Turtle back to start, facing start direction
+      draw(pts, undefined, undefined, walkedExt, pts[0], edgeAngle(pts[n-1], pts[0]) - Math.PI/2);
+      setLogTotal(`All exterior angles = <strong>360°</strong>  →  interior sum = (${n}−2)×180° = <strong>${(n-2)*180}°</strong>`);
+      setBusy(false);
+    }
+  }
+
+  draw(pts, undefined, undefined, [], pts[0], edgeAngle(pts[n-1], pts[0]) - Math.PI/2);
+  animId = setTimeout(doWalkStep, 500);
+});
+
+// ─── Init ──────────────────────────────────────────────────────
+window.addEventListener('resize', resize);
+updateInfo(n);
+resize(); // also calls draw()
+</script>
+</body>
+</html>
