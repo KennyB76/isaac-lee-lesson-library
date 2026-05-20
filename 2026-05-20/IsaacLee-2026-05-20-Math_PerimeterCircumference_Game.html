@@ -289,8 +289,8 @@ footer.bot strong { color: var(--teal); }
 <div class="wrap">
 
 <header class="top">
-    <h1>Find the Perimeter &amp; Circumference</h1>
-    <div class="sub">Walk around the outside — that&apos;s perimeter. Around a circle — that&apos;s circumference.</div>
+    <h1>Perimeter, Circumference &amp; Area</h1>
+    <div class="sub">Walk the outside → perimeter / circumference. Fill the inside → area.</div>
 </header>
 
 <div class="hud">
@@ -307,17 +307,18 @@ footer.bot strong { color: var(--teal); }
 <div class="screen" id="pickScreen">
     <h2>Pick what to practice</h2>
     <div class="picker">
-        <button data-mode="polygons">Polygons<span class="sub">square · rect · triangle · trapezoid · hexagon</span></button>
-        <button data-mode="circles">Circles<span class="sub">circumference (π · d)</span></button>
-        <button data-mode="mix" class="mix">Mix All Shapes<span class="sub">polygons + circles, random</span></button>
+        <button data-mode="perimeter">Perimeter<span class="sub">polygons · walk the outside</span></button>
+        <button data-mode="area">Area<span class="sub">fill the inside · units²</span></button>
+        <button data-mode="circles">Circles<span class="sub">circumference &amp; area · π</span></button>
+        <button data-mode="mix" class="mix">Mix All<span class="sub">random shape, random question</span></button>
     </div>
     <div class="rules">
         <div class="head">⚡ The Rules</div>
         <ul>
-            <li><strong>Perimeter</strong> = the total distance around the outside. Just add up every side.</li>
-            <li><strong>Circumference</strong> (circle's perimeter) = $\pi \times d$ (use $\pi = 3.14$).</li>
-            <li>Type your answer in the box and press <strong>Enter</strong> or <strong>Submit</strong>.</li>
-            <li>Decimal answers are OK — within ±0.05 still counts as correct.</li>
+            <li><strong>Perimeter</strong> — total distance around the outside. Add every side.</li>
+            <li><strong>Area</strong> — number of unit squares inside. Use the right formula for each shape. Answer is in <em>squared</em> units (m², cm² …).</li>
+            <li><strong>Circle</strong>: $C = \pi \cdot d$, $\;A = \pi \cdot r^2$ &nbsp;(use $\pi = 3.14$).</li>
+            <li>Type the answer, press <strong>Enter</strong> or <strong>Submit</strong>. Tolerance ±0.05.</li>
         </ul>
     </div>
 </div>
@@ -659,11 +660,145 @@ function genCircle() {
 
 const POLYGONS = [genSquare, genRectangle, genTriangle, genParallelogram, genTrapezoid, genHexagon];
 
+// ====================== Area generators ======================
+function genSquareArea() {
+    const s = randInt(3, 14);
+    const u = pick(UNITS);
+    const size = 100;
+    const x = (380 - size) / 2, y = (240 - size) / 2;
+    const svg = `
+      <rect x="${x}" y="${y}" width="${size}" height="${size}" fill="#bee3f8" stroke="#1565c0" stroke-width="2"/>
+      <text x="${x + size/2}" y="${y - 8}" text-anchor="middle" font-size="13" fill="#c62828" font-weight="bold">${s} ${u}</text>
+    `;
+    return {
+        kind: 'square',
+        ask: 'area',
+        answer: s * s,
+        unit: u,
+        svg,
+        steps: `Square area = s × s = ${s} × ${s} = ${s*s}; unit ${u}²`,
+    };
+}
+function genRectangleArea() {
+    let l = randInt(4, 16), w = randInt(3, 12);
+    while (l === w) w = randInt(3, 12);
+    const u = pick(UNITS);
+    const sx = Math.min(180 / l, 110 / w, 14);
+    const W = l * sx, H = w * sx;
+    const x = (380 - W) / 2, y = (240 - H) / 2;
+    const svg = `
+      <rect x="${x}" y="${y}" width="${W}" height="${H}" fill="#bee3f8" stroke="#1565c0" stroke-width="2"/>
+      <text x="${x + W/2}" y="${y - 8}" text-anchor="middle" font-size="13" fill="#c62828" font-weight="bold">${l} ${u}</text>
+      <text x="${x - 8}" y="${y + H/2 + 4}" text-anchor="end" font-size="13" fill="#c62828" font-weight="bold">${w} ${u}</text>
+    `;
+    return {
+        kind: 'rectangle',
+        ask: 'area',
+        answer: l * w,
+        unit: u,
+        svg,
+        steps: `Rectangle area = l × w = ${l} × ${w} = ${l*w}; unit ${u}²`,
+    };
+}
+function genTriangleArea() {
+    const b = randInt(5, 14), h = randInt(3, 10);
+    const u = pick(UNITS);
+    const sx = 16;
+    const W = b * sx, H = h * sx;
+    const x0 = (380 - W) / 2, y0 = (240 - H) / 2 + 20;
+    const apex_x = x0 + W * (0.3 + Math.random() * 0.4); // apex between 30%-70% of base
+    const svg = `
+      <polygon points="${x0},${y0+H} ${x0+W},${y0+H} ${apex_x.toFixed(1)},${y0}" fill="#ffe0e6" stroke="#1565c0" stroke-width="2"/>
+      <line x1="${apex_x.toFixed(1)}" y1="${y0}" x2="${apex_x.toFixed(1)}" y2="${y0+H}" stroke="#1565c0" stroke-width="1" stroke-dasharray="3,3"/>
+      <rect x="${apex_x - 5}" y="${y0+H-5}" width="5" height="5" fill="none" stroke="#1565c0" stroke-width="0.8"/>
+      <text x="${x0+W/2}" y="${y0+H+18}" text-anchor="middle" font-size="13" fill="#c62828" font-weight="bold">base = ${b} ${u}</text>
+      <text x="${apex_x + 6}" y="${y0+H/2+4}" font-size="13" fill="#c62828" font-weight="bold">h = ${h} ${u}</text>
+    `;
+    return {
+        kind: 'triangle',
+        ask: 'area',
+        answer: (b * h) / 2,
+        unit: u,
+        svg,
+        steps: `Triangle area = (b × h) / 2 = (${b} × ${h}) / 2 = ${b*h} / 2 = ${(b*h)/2}; unit ${u}²`,
+    };
+}
+function genParallelogramArea() {
+    const b = randInt(6, 14), h = randInt(4, 9), slant = randInt(2, 6);
+    const u = pick(UNITS);
+    const sx = 14;
+    const W = b * sx, H = h * sx, S = slant * sx;
+    const x0 = (380 - (W + S)) / 2, y0 = (240 - H) / 2;
+    const svg = `
+      <polygon points="${x0},${y0+H} ${x0+W},${y0+H} ${x0+W+S},${y0} ${x0+S},${y0}" fill="#fff3b0" stroke="#1565c0" stroke-width="2"/>
+      <line x1="${x0+S}" y1="${y0}" x2="${x0+S}" y2="${y0+H}" stroke="#1565c0" stroke-width="1" stroke-dasharray="3,3"/>
+      <rect x="${x0+S}" y="${y0+H-5}" width="5" height="5" fill="none" stroke="#1565c0" stroke-width="0.8"/>
+      <text x="${x0+W/2+S/2}" y="${y0+H+18}" text-anchor="middle" font-size="13" fill="#c62828" font-weight="bold">base = ${b} ${u}</text>
+      <text x="${x0+S-8}" y="${y0+H/2+4}" text-anchor="end" font-size="13" fill="#c62828" font-weight="bold">h = ${h} ${u}</text>
+    `;
+    return {
+        kind: 'parallelogram',
+        ask: 'area',
+        answer: b * h,
+        unit: u,
+        svg,
+        steps: `Parallelogram area = b × h = ${b} × ${h} = ${b*h}; unit ${u}² (slant doesn't count, use perpendicular h)`,
+    };
+}
+function genTrapezoidArea() {
+    const b1 = randInt(3, 9), b2 = b1 + randInt(2, 6), h = randInt(3, 8);
+    const u = pick(UNITS);
+    const sx = 14;
+    const W2 = b2 * sx, W1 = b1 * sx, H = h * sx;
+    const x0 = (380 - W2) / 2, y0 = (240 - H) / 2;
+    const offset = (W2 - W1) / 2;
+    const svg = `
+      <polygon points="${x0},${y0+H} ${x0+W2},${y0+H} ${x0+offset+W1},${y0} ${x0+offset},${y0}" fill="#cdebd6" stroke="#1565c0" stroke-width="2"/>
+      <line x1="${x0+offset}" y1="${y0}" x2="${x0+offset}" y2="${y0+H}" stroke="#1565c0" stroke-width="1" stroke-dasharray="3,3"/>
+      <rect x="${x0+offset}" y="${y0+H-5}" width="5" height="5" fill="none" stroke="#1565c0" stroke-width="0.8"/>
+      <text x="${x0+W2/2}" y="${y0-6}" text-anchor="middle" font-size="12" fill="#c62828" font-weight="bold">b₁ = ${b1} ${u}</text>
+      <text x="${x0+W2/2}" y="${y0+H+18}" text-anchor="middle" font-size="12" fill="#c62828" font-weight="bold">b₂ = ${b2} ${u}</text>
+      <text x="${x0+offset-8}" y="${y0+H/2+4}" text-anchor="end" font-size="12" fill="#c62828" font-weight="bold">h = ${h} ${u}</text>
+    `;
+    const area = (b1 + b2) * h / 2;
+    return {
+        kind: 'trapezoid',
+        ask: 'area',
+        answer: area,
+        unit: u,
+        svg,
+        steps: `Trapezoid area = (b₁+b₂) × h / 2 = (${b1}+${b2}) × ${h} / 2 = ${(b1+b2)*h} / 2 = ${area}; unit ${u}²`,
+    };
+}
+function genCircleArea() {
+    const r = randInt(3, 11);
+    const u = pick(UNITS);
+    const cx = 190, cy = 120, rad = 70;
+    const svg = `
+      <circle cx="${cx}" cy="${cy}" r="${rad}" fill="#e3f2fd" stroke="#1565c0" stroke-width="2.5"/>
+      <line x1="${cx}" y1="${cy}" x2="${cx+rad}" y2="${cy}" stroke="#c62828" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <circle cx="${cx}" cy="${cy}" r="3" fill="#c62828"/>
+      <text x="${cx + rad/2}" y="${cy - 6}" text-anchor="middle" font-size="13" fill="#c62828" font-weight="bold">r = ${r} ${u}</text>
+    `;
+    const a = PI * r * r;
+    return {
+        kind: 'circle',
+        ask: 'area',
+        answer: Math.round(a * 100) / 100,
+        unit: u,
+        svg,
+        steps: `Circle area = π × r² = 3.14 × ${r}² = 3.14 × ${r*r} = ${fmt(a)}; unit ${u}²`,
+    };
+}
+
+const AREA_POOL = [genSquareArea, genRectangleArea, genTriangleArea, genParallelogramArea, genTrapezoidArea, genCircleArea];
+
 function nextQuestion() {
     let gen;
-    if (state.mode === 'polygons') gen = pick(POLYGONS);
-    else if (state.mode === 'circles') gen = genCircle;
-    else gen = pick([...POLYGONS, genCircle]);
+    if (state.mode === 'perimeter') gen = pick(POLYGONS);
+    else if (state.mode === 'area') gen = pick(AREA_POOL);
+    else if (state.mode === 'circles') gen = pick([genCircle, genCircleArea]);
+    else gen = pick([...POLYGONS, genCircle, ...AREA_POOL]);
     state.current = gen();
     renderQuestion();
 }
@@ -676,12 +811,17 @@ function renderQuestion() {
     ansInput.value = '';
     ansInput.disabled = false;
     ansInput.focus();
-    ansUnit.textContent = q.unit;
+    // Area answers carry a squared unit
+    ansUnit.textContent = (q.ask === 'area') ? `${q.unit}²` : q.unit;
     submitBtn.disabled = false;
     submitBtn.classList.remove('hide');
     nextBtn.classList.add('hide');
     feedback.style.display = 'none';
     feedback.className = 'feedback';
+}
+
+function answerUnit(q) {
+    return (q.ask === 'area') ? `${q.unit}²` : q.unit;
 }
 
 function submitAnswer() {
@@ -708,14 +848,16 @@ function submitAnswer() {
         if (state.streak === 3) { streakTag = ' · 3 in a row!'; streakSpeak = 'Three in a row.'; }
         else if (state.streak === 5) { streakTag = ' · 5 STREAK!'; streakSpeak = 'Five streak.'; }
         else if (state.streak >= 7 && state.streak % 5 === 0) { streakTag = ' · ' + state.streak + ' streak!'; streakSpeak = state.streak + ' streak.'; }
+        const label = q.ask.charAt(0).toUpperCase() + q.ask.slice(1);
+        const aUnit = answerUnit(q);
         feedback.innerHTML = `
             <div>★ Correct${streakTag}</div>
-            <div class="big">${q.ask === 'circumference' ? 'Circumference' : 'Perimeter'} = ${fmt(q.answer)} ${q.unit}</div>
+            <div class="big">${label} = ${fmt(q.answer)} ${aUnit}</div>
             <div class="steps">${q.steps}</div>
         `;
-        // Voice — short, factual
-        const label = q.ask === 'circumference' ? 'Circumference' : 'Perimeter';
-        speak(`Correct. ${label} is ${fmt(q.answer)} ${q.unit}.`, 1.0, 1.0);
+        // Voice — short, factual. For area, speak "square meters" etc.
+        const spokenUnit = (q.ask === 'area') ? `square ${q.unit}` : q.unit;
+        speak(`Correct. ${label} is ${fmt(q.answer)} ${spokenUnit}.`, 1.0, 1.0);
         if (streakSpeak) {
             sfxStreak();
             setTimeout(() => speak(streakSpeak, 1.05, 1.05), 1500);
@@ -723,13 +865,15 @@ function submitAnswer() {
     } else {
         state.streak = 0;
         sfxWrong();
+        const aUnit = answerUnit(q);
+        const spokenUnit = (q.ask === 'area') ? `square ${q.unit}` : q.unit;
         feedback.className = 'feedback wrong';
         feedback.innerHTML = `
-            <div>Not quite. You answered <strong>${raw} ${q.unit}</strong>.</div>
-            <div class="big">Correct: ${fmt(q.answer)} ${q.unit}</div>
+            <div>Not quite. You answered <strong>${raw} ${aUnit}</strong>.</div>
+            <div class="big">Correct: ${fmt(q.answer)} ${aUnit}</div>
             <div class="steps">${q.steps}</div>
         `;
-        speak(`Not quite. The correct answer is ${fmt(q.answer)} ${q.unit}.`, 1.0, 1.0);
+        speak(`Not quite. The correct answer is ${fmt(q.answer)} ${spokenUnit}.`, 1.0, 1.0);
     }
     feedback.style.display = 'block';
     updateHUD();
@@ -752,9 +896,11 @@ document.querySelectorAll('.picker button').forEach(btn => {
         ensureAudio();
         if (audioPrefs.musicOn) startMusic();
         if (!state.greeted) {
-            const greeting = (state.mode === 'circles')
-                ? 'Welcome Isaac. For a circle, circumference is pi times d. Use 3.14.'
-                : 'Welcome Isaac. Walk around the outside. Add up every side.';
+            let greeting;
+            if (state.mode === 'circles') greeting = 'Welcome Isaac. For a circle, circumference is pi times d, area is pi times r squared. Use 3.14.';
+            else if (state.mode === 'area') greeting = 'Welcome Isaac. Area is how many unit squares fit inside. Pick the right formula for each shape.';
+            else if (state.mode === 'perimeter') greeting = 'Welcome Isaac. Walk around the outside. Add up every side.';
+            else greeting = 'Welcome Isaac. Mixed mode. Read each question carefully — sometimes perimeter, sometimes area.';
             speak(greeting, 1.0, 1.0);
             state.greeted = true;
         }
