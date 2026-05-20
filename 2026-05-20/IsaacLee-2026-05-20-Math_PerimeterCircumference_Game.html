@@ -68,6 +68,7 @@ header.top .sub { font-size: 13px; opacity: 0.92; font-style: italic; }
 .hud {
     display: flex;
     justify-content: space-around;
+    align-items: center;
     background: var(--teal-soft);
     padding: 12px 16px;
     border-bottom: 1px solid var(--line);
@@ -75,6 +76,25 @@ header.top .sub { font-size: 13px; opacity: 0.92; font-style: italic; }
 .hud .stat { text-align: center; }
 .hud .stat .num { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--teal-deep); line-height: 1; }
 .hud .stat .lbl { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); margin-top: 2px; font-weight: 600; }
+.hud .audio-toggles { display: flex; gap: 6px; }
+.atog {
+    background: var(--paper);
+    border: 2px solid var(--teal);
+    border-radius: 18px;
+    width: 32px; height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--teal-deep);
+    transition: all 0.15s ease;
+    padding: 0;
+    line-height: 1;
+    position: relative;
+}
+.atog:hover { background: var(--teal-soft); transform: translateY(-1px); }
+.atog.off { background: var(--teal-soft); border-color: var(--line); color: var(--ink-soft); opacity: 0.55; }
 
 .screen { padding: 22px 26px; }
 .screen.hide { display: none; }
@@ -277,6 +297,10 @@ footer.bot strong { color: var(--teal); }
     <div class="stat"><div class="num" id="hudScore">0</div><div class="lbl">Score</div></div>
     <div class="stat"><div class="num" id="hudStreak">0</div><div class="lbl">Streak</div></div>
     <div class="stat"><div class="num" id="hudSolved">0</div><div class="lbl">Solved</div></div>
+    <div class="audio-toggles">
+        <button class="atog" id="voiceTog" title="Voice on/off">&#128266;</button>
+        <button class="atog off" id="musicTog" title="Music on/off">&#127925;</button>
+    </div>
 </div>
 
 <!-- ===================== PICK SCREEN ===================== -->
@@ -340,7 +364,110 @@ let state = {
     streak: 0,
     solved: 0,
     current: null,
+    greeted: false,
 };
+
+// Audio prefs — voice ON by default, music OFF (Isaac can turn it on)
+let audioPrefs = { voiceOn: true, musicOn: false };
+
+// ============================================================================
+// Audio engine — Web Audio API (SFX + music) + Web Speech API (voice)
+// ============================================================================
+let audioCtx = null;
+let musicTimer = null;
+let musicStep = 0;
+let pickedVoice = null;
+
+function ensureAudio() {
+    if (!audioCtx) {
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { audioCtx = null; }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+}
+function playTone(freq, dur = 0.15, type = 'sine', vol = 0.18) {
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.value = 0;
+    g.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(); o.stop(ctx.currentTime + dur + 0.05);
+}
+function sfxCorrect() {
+    // C5 -> E5 -> G5 -> high C6
+    [523.25, 659.25, 783.99, 1046.50].forEach((f, i) =>
+        setTimeout(() => playTone(f, 0.22, 'sine', 0.22), i * 70));
+}
+function sfxWrong() {
+    playTone(220, 0.18, 'sawtooth', 0.14);
+    setTimeout(() => playTone(165, 0.22, 'sawtooth', 0.12), 90);
+}
+function sfxStreak() {
+    [783.99, 1046.50, 1318.51, 1567.98].forEach((f, i) =>
+        setTimeout(() => playTone(f, 0.18, 'triangle', 0.22), i * 90));
+}
+function sfxType() {
+    playTone(1320, 0.045, 'square', 0.04);
+}
+
+// Background music — gentle C-major arpeggio loop, kept quiet so voice cuts through
+const melody = [
+    { f: 523.25, d: 320 }, { f: 659.25, d: 320 }, { f: 783.99, d: 320 }, { f: 659.25, d: 320 },
+    { f: 587.33, d: 320 }, { f: 698.46, d: 320 }, { f: 880.00, d: 320 }, { f: 698.46, d: 480 },
+    { f: 523.25, d: 320 }, { f: 587.33, d: 320 }, { f: 659.25, d: 320 }, { f: 587.33, d: 320 },
+    { f: 523.25, d: 320 }, { f: 440.00, d: 320 }, { f: 392.00, d: 320 }, { f: 523.25, d: 480 },
+];
+function startMusic() {
+    if (!audioPrefs.musicOn) return;
+    stopMusic();
+    musicStep = 0;
+    function next() {
+        if (!audioPrefs.musicOn) { musicTimer = null; return; }
+        const n = melody[musicStep % melody.length];
+        playTone(n.f, n.d / 1000 * 0.85, 'triangle', 0.05);
+        musicStep++;
+        musicTimer = setTimeout(next, n.d);
+    }
+    next();
+}
+function stopMusic() { if (musicTimer) { clearTimeout(musicTimer); musicTimer = null; } }
+
+// Web Speech API
+function loadVoices() {
+    if (!('speechSynthesis' in window)) return;
+    const voices = speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return;
+    const preferOrder = [
+        v => v.lang.startsWith('en') && /(daniel|alex|google.+male|david|guy|matthew)/i.test(v.name),
+        v => v.lang.startsWith('en') && /male/i.test(v.name) && !/female/i.test(v.name),
+        v => v.lang === 'en-US',
+        v => v.lang.startsWith('en'),
+    ];
+    for (const pred of preferOrder) {
+        const f = voices.find(pred);
+        if (f) { pickedVoice = f; return; }
+    }
+}
+if ('speechSynthesis' in window) {
+    loadVoices();
+    speechSynthesis.onvoiceschanged = loadVoices;
+}
+function speak(text, rate = 1.0, pitch = 1.0) {
+    if (!audioPrefs.voiceOn) return;
+    if (!('speechSynthesis' in window)) return;
+    try {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        if (pickedVoice) u.voice = pickedVoice;
+        u.rate = rate; u.pitch = pitch; u.volume = 0.95;
+        speechSynthesis.speak(u);
+    } catch (e) {}
+}
 
 // ============================================================================
 // Element refs
@@ -574,24 +701,35 @@ function submitAnswer() {
     if (approxEqual(raw, q.answer)) {
         state.score++;
         state.streak++;
+        sfxCorrect();
         feedback.className = 'feedback correct';
         let streakTag = '';
-        if (state.streak === 3) streakTag = ' · 3 in a row!';
-        else if (state.streak === 5) streakTag = ' · 5 STREAK!';
-        else if (state.streak >= 7 && state.streak % 5 === 0) streakTag = ' · ' + state.streak + ' streak!';
+        let streakSpeak = null;
+        if (state.streak === 3) { streakTag = ' · 3 in a row!'; streakSpeak = 'Three in a row.'; }
+        else if (state.streak === 5) { streakTag = ' · 5 STREAK!'; streakSpeak = 'Five streak.'; }
+        else if (state.streak >= 7 && state.streak % 5 === 0) { streakTag = ' · ' + state.streak + ' streak!'; streakSpeak = state.streak + ' streak.'; }
         feedback.innerHTML = `
             <div>★ Correct${streakTag}</div>
             <div class="big">${q.ask === 'circumference' ? 'Circumference' : 'Perimeter'} = ${fmt(q.answer)} ${q.unit}</div>
             <div class="steps">${q.steps}</div>
         `;
+        // Voice — short, factual
+        const label = q.ask === 'circumference' ? 'Circumference' : 'Perimeter';
+        speak(`Correct. ${label} is ${fmt(q.answer)} ${q.unit}.`, 1.0, 1.0);
+        if (streakSpeak) {
+            sfxStreak();
+            setTimeout(() => speak(streakSpeak, 1.05, 1.05), 1500);
+        }
     } else {
         state.streak = 0;
+        sfxWrong();
         feedback.className = 'feedback wrong';
         feedback.innerHTML = `
             <div>Not quite. You answered <strong>${raw} ${q.unit}</strong>.</div>
             <div class="big">Correct: ${fmt(q.answer)} ${q.unit}</div>
             <div class="steps">${q.steps}</div>
         `;
+        speak(`Not quite. The correct answer is ${fmt(q.answer)} ${q.unit}.`, 1.0, 1.0);
     }
     feedback.style.display = 'block';
     updateHUD();
@@ -611,8 +749,34 @@ document.querySelectorAll('.picker button').forEach(btn => {
         state.mode = btn.dataset.mode;
         pickScreen.classList.add('hide');
         qScreen.classList.remove('hide');
+        ensureAudio();
+        if (audioPrefs.musicOn) startMusic();
+        if (!state.greeted) {
+            const greeting = (state.mode === 'circles')
+                ? 'Welcome Isaac. For a circle, circumference is pi times d. Use 3.14.'
+                : 'Welcome Isaac. Walk around the outside. Add up every side.';
+            speak(greeting, 1.0, 1.0);
+            state.greeted = true;
+        }
         nextQuestion();
     });
+});
+
+// Audio toggle buttons
+const voiceTog = document.getElementById('voiceTog');
+const musicTog = document.getElementById('musicTog');
+voiceTog.addEventListener('click', () => {
+    audioPrefs.voiceOn = !audioPrefs.voiceOn;
+    voiceTog.classList.toggle('off', !audioPrefs.voiceOn);
+    voiceTog.innerHTML = audioPrefs.voiceOn ? '&#128266;' : '&#128263;';
+    if (!audioPrefs.voiceOn && 'speechSynthesis' in window) speechSynthesis.cancel();
+    else if (audioPrefs.voiceOn) speak('Voice on.', 1.05, 1.0);
+});
+musicTog.addEventListener('click', () => {
+    audioPrefs.musicOn = !audioPrefs.musicOn;
+    musicTog.classList.toggle('off', !audioPrefs.musicOn);
+    if (audioPrefs.musicOn) { ensureAudio(); startMusic(); }
+    else stopMusic();
 });
 
 submitBtn.addEventListener('click', submitAnswer);
