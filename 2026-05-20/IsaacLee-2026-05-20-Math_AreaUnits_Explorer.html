@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  Interactive — Area & Units Explorer
+  Isaac Lee · 6th grade · 2026-05-20
+  ----------------------------------------------------------------------------
+  Kenny insights:
+    - 1 m² is the area of a 1m × 1m square. "The 1 is hidden."
+    - Multiplication IS area; the unit comes from the unit × unit too.
+    - Parallelogram → cut & slide a triangle → rectangle (same area).
+    - Trapezoid → flip an identical copy → parallelogram of base (b1+b2),
+      height h. So each trapezoid is half of that.
+  Four panels chosen by tab buttons; SVG animations show the moves.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Area &amp; Units Explorer · Isaac Lee</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$']]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+:root {
+    --teal:        #0d9488;
+    --teal-soft:   #ccfbf1;
+    --teal-deep:   #134e4a;
+    --blue:        #1565c0;
+    --blue-soft:   #e3f2fd;
+    --green:       #2e7d32;
+    --green-soft:  #d4f7ed;
+    --pink:        #ec4899;
+    --pink-soft:   #fce7f3;
+    --orange:      #f97316;
+    --orange-soft: #ffedd5;
+    --ink:         #0f172a;
+    --ink-soft:    #475569;
+    --bg:          #f0fdfa;
+    --paper:       #ffffff;
+    --line:        #cfece6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    padding: 18px 14px 40px;
+}
+.wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-radius: 16px;
+    box-shadow: 0 6px 26px rgba(13,148,136,0.12);
+    overflow: hidden;
+}
+
+header.top {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 22px 28px;
+}
+header.top .lbl { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.9; }
+header.top h1 {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.2;
+    margin-top: 4px;
+}
+header.top .sub { font-size: 13px; opacity: 0.92; font-style: italic; margin-top: 3px; }
+
+nav.tabs {
+    display: flex;
+    background: var(--teal-soft);
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+}
+nav.tabs button {
+    flex: 1 1 auto;
+    border: none;
+    background: transparent;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--teal-deep);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+nav.tabs button:hover { background: rgba(255,255,255,0.5); }
+nav.tabs button.active {
+    background: var(--paper);
+    border-bottom-color: var(--teal);
+    color: var(--teal-deep);
+}
+
+main { padding: 22px 26px 28px; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+.golden {
+    border: 2px dashed var(--orange);
+    background: var(--orange-soft);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+.golden .head {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+.golden strong { color: var(--blue); }
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin: 14px 0;
+}
+.ctrl {
+    background: var(--teal-soft);
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+.ctrl label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--teal-deep);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.ctrl label .v {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--blue);
+}
+.ctrl input[type=range] {
+    width: 100%;
+    accent-color: var(--teal);
+}
+.ctrl select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+.stage {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0;
+}
+.stage svg { max-width: 100%; height: auto; }
+
+.result-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+}
+@media (max-width: 540px) { .result-row { grid-template-columns: 1fr; } }
+.result-card {
+    background: var(--blue-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+.result-card .head {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 600;
+}
+.result-card .big {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-top: 4px;
+}
+.result-card .sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+}
+
+.unit-math {
+    background: var(--green-soft);
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-size: 14.5px;
+    text-align: center;
+    color: var(--teal-deep);
+}
+.unit-math .row { margin: 6px 0; }
+.unit-math .hidden-one { color: var(--orange); font-weight: bold; }
+.unit-math .num { color: var(--blue); font-weight: 700; }
+.unit-math .unit { color: var(--green); font-weight: 700; font-style: italic; }
+
+.go-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--blue) 100%);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(13,148,136,0.25);
+    margin-top: 6px;
+    transition: transform 0.15s ease;
+}
+.go-btn:hover { transform: translateY(-2px); }
+
+footer.bot {
+    text-align: center;
+    padding: 12px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+}
+footer.bot strong { color: var(--teal); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="top">
+    <div class="lbl">Newton School · Interactive</div>
+    <h1>Area &amp; Units Explorer</h1>
+    <div class="sub">Visualize first. The equation always comes second.</div>
+</header>
+
+<nav class="tabs" id="tabs">
+    <button class="active" data-panel="p1">① Unit Square</button>
+    <button data-panel="p2">② Rectangle</button>
+    <button data-panel="p3">③ Parallelogram → Rectangle</button>
+    <button data-panel="p4">④ Trapezoid → Parallelogram</button>
+</nav>
+
+<main>
+
+<!-- ===================== PANEL 1 — UNIT SQUARE ===================== -->
+<section class="panel active" id="p1">
+    <div class="golden">
+        <div class="head">★ What does 1 m² really mean?</div>
+        It is the area enclosed by a square that is <strong>1 m wide</strong> and <strong>1 m tall</strong>. The "1" in <span class="hidden-one">1 m²</span> is <em>hidden</em> — the unit comes from <strong>m × m = m²</strong>.
+    </div>
+    <div class="controls">
+        <div class="ctrl">
+            <label>Unit <span class="v" id="u1Lbl">m</span></label>
+            <select id="u1">
+                <option value="m">m (meter)</option>
+                <option value="cm">cm (centimeter)</option>
+                <option value="in">in (inch)</option>
+                <option value="ft">ft (foot)</option>
+                <option value="yd">yd (yard)</option>
+                <option value="km">km (kilometer)</option>
+            </select>
+        </div>
+    </div>
+    <div class="stage">
+        <svg id="svg1" width="320" height="260" viewBox="0 0 320 260">
+            <rect x="60" y="40" width="200" height="200" fill="#bee3f8" stroke="#1565c0" stroke-width="2.5"/>
+            <text x="160" y="148" text-anchor="middle" font-size="26" fill="#0d47a1" font-family="Georgia,serif" font-weight="bold" id="t1Inside">1 m²</text>
+            <text x="160" y="174" text-anchor="middle" font-size="13" fill="#475569" font-style="italic">(area inside)</text>
+            <text x="160" y="32" text-anchor="middle" font-size="14" fill="#c62828" font-weight="bold" id="t1Top">1 m</text>
+            <text x="50" y="146" text-anchor="end" font-size="14" fill="#c62828" font-weight="bold" id="t1Side">1 m</text>
+            <line x1="60" y1="22" x2="260" y2="22" stroke="#c62828" stroke-width="1"/>
+            <line x1="60" y1="18" x2="60" y2="26" stroke="#c62828" stroke-width="1"/>
+            <line x1="260" y1="18" x2="260" y2="26" stroke="#c62828" stroke-width="1"/>
+            <line x1="42" y1="40" x2="42" y2="240" stroke="#c62828" stroke-width="1"/>
+            <line x1="38" y1="40" x2="46" y2="40" stroke="#c62828" stroke-width="1"/>
+            <line x1="38" y1="240" x2="46" y2="240" stroke="#c62828" stroke-width="1"/>
+        </svg>
+    </div>
+    <div class="unit-math" id="u1Math">
+        <div class="row"><span class="hidden-one">1</span> × <span class="hidden-one">1</span> = 1 &nbsp; AND &nbsp; <span class="unit">m</span> × <span class="unit">m</span> = <span class="unit">m²</span></div>
+        <div class="row" style="font-size: 17px; margin-top: 8px;">→ <strong>1 m²</strong> is one little square. Count how many fit inside any shape — that's the area.</div>
+    </div>
+</section>
+
+<!-- ===================== PANEL 2 — RECTANGLE ===================== -->
+<section class="panel" id="p2">
+    <div class="golden">
+        <div class="head">★ Multiplication IS area</div>
+        Drag the sliders. The rectangle fills with <strong>b × h</strong> unit squares — that count is the area. The unit is <strong>(unit × unit) = unit²</strong>.
+    </div>
+    <div class="controls">
+        <div class="ctrl">
+            <label>base (b) <span class="v" id="bLbl">5</span></label>
+            <input type="range" id="bSlider" min="1" max="12" value="5">
+        </div>
+        <div class="ctrl">
+            <label>height (h) <span class="v" id="hLbl">4</span></label>
+            <input type="range" id="hSlider" min="1" max="10" value="4">
+        </div>
+        <div class="ctrl">
+            <label>Unit <span class="v" id="u2Lbl">m</span></label>
+            <select id="u2">
+                <option value="m">m</option>
+                <option value="cm">cm</option>
+                <option value="in">in</option>
+                <option value="ft">ft</option>
+                <option value="yd">yd</option>
+                <option value="km">km</option>
+            </select>
+        </div>
+    </div>
+    <div class="stage">
+        <svg id="svg2" width="420" height="280" viewBox="0 0 420 280"></svg>
+    </div>
+    <div class="result-row">
+        <div class="result-card">
+            <div class="head">Area</div>
+            <div class="big" id="p2Area">20 m²</div>
+            <div class="sub" id="p2AreaExpand">5 m × 4 m = 20 m²</div>
+        </div>
+        <div class="result-card">
+            <div class="head">Unit Math</div>
+            <div class="big" style="font-size: 18px; line-height: 1.4;" id="p2UnitMath">m × m = m²</div>
+            <div class="sub">The unit comes from the multiplication.</div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== PANEL 3 — PARALLELOGRAM ===================== -->
+<section class="panel" id="p3">
+    <div class="golden">
+        <div class="head">★ A parallelogram is just a rectangle in disguise</div>
+        Press <strong>Slide!</strong> — the slanted triangle slides from one side to the other. The shape becomes a rectangle of the same base &amp; perpendicular height. Same area.
+        Formula: $\text{Area} = b \times h$ &nbsp; (use the perpendicular $h$, never the slant).
+    </div>
+    <div class="controls">
+        <div class="ctrl" style="align-self: end;">
+            <button class="go-btn" id="p3Go">▶ Slide!</button>
+        </div>
+        <div class="ctrl">
+            <label>base (b) <span class="v" id="p3bLbl">8</span></label>
+            <input type="range" id="p3b" min="4" max="14" value="8">
+        </div>
+        <div class="ctrl">
+            <label>height (h) <span class="v" id="p3hLbl">5</span></label>
+            <input type="range" id="p3h" min="3" max="9" value="5">
+        </div>
+        <div class="ctrl">
+            <label>slant offset <span class="v" id="p3sLbl">3</span></label>
+            <input type="range" id="p3s" min="0" max="6" value="3">
+        </div>
+    </div>
+    <div class="stage">
+        <svg id="svg3" width="460" height="260" viewBox="0 0 460 260"></svg>
+    </div>
+    <div class="result-card">
+        <div class="head">Area</div>
+        <div class="big" id="p3Area">40 m²</div>
+        <div class="sub" id="p3Note">Slant doesn't matter. The perpendicular height does.</div>
+    </div>
+</section>
+
+<!-- ===================== PANEL 4 — TRAPEZOID ===================== -->
+<section class="panel" id="p4">
+    <div class="golden">
+        <div class="head">★ Two trapezoids make a parallelogram</div>
+        Press <strong>Flip &amp; Match!</strong> — a copy of the trapezoid flips upside down and fits next to the original. Together they form a parallelogram with base $b_1 + b_2$ and height $h$. So <strong>one trapezoid is half</strong>:
+        $$\text{Area}_\text{trap} = \dfrac{(b_1 + b_2) \times h}{2}$$
+    </div>
+    <div class="controls">
+        <div class="ctrl" style="align-self: end;">
+            <button class="go-btn" id="p4Go">▶ Flip &amp; Match!</button>
+        </div>
+        <div class="ctrl">
+            <label>b₁ (top) <span class="v" id="p4b1Lbl">4</span></label>
+            <input type="range" id="p4b1" min="2" max="10" value="4">
+        </div>
+        <div class="ctrl">
+            <label>b₂ (bottom) <span class="v" id="p4b2Lbl">8</span></label>
+            <input type="range" id="p4b2" min="2" max="14" value="8">
+        </div>
+        <div class="ctrl">
+            <label>h (height) <span class="v" id="p4hLbl">5</span></label>
+            <input type="range" id="p4h" min="2" max="9" value="5">
+        </div>
+    </div>
+    <div class="stage">
+        <svg id="svg4" width="460" height="260" viewBox="0 0 460 260"></svg>
+    </div>
+    <div class="result-card">
+        <div class="head">Area</div>
+        <div class="big" id="p4Area">30 m²</div>
+        <div class="sub" id="p4Steps">(4 + 8) × 5 / 2 = 60 / 2 = 30</div>
+    </div>
+</section>
+
+</main>
+
+<footer class="bot">
+    Made for <strong>Isaac Lee</strong> · Newton School · 2026-05-20 · Concept first · Equation second
+</footer>
+
+</div>
+
+<script>
+// ====================== Tabs ======================
+const tabs = document.querySelectorAll('#tabs button');
+const panels = document.querySelectorAll('.panel');
+tabs.forEach(t => t.addEventListener('click', () => {
+    tabs.forEach(b => b.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.panel).classList.add('active');
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+}));
+
+// ====================== Panel 1 — Unit square ======================
+const u1Sel = document.getElementById('u1');
+const u1Lbl = document.getElementById('u1Lbl');
+const t1Inside = document.getElementById('t1Inside');
+const t1Top = document.getElementById('t1Top');
+const t1Side = document.getElementById('t1Side');
+const u1Math = document.getElementById('u1Math');
+function updateU1() {
+    const u = u1Sel.value;
+    u1Lbl.textContent = u;
+    t1Inside.textContent = `1 ${u}²`;
+    t1Top.textContent = `1 ${u}`;
+    t1Side.textContent = `1 ${u}`;
+    u1Math.querySelectorAll('.unit').forEach((el, i) => {
+        el.textContent = (i === 2) ? `${u}²` : u;
+    });
+    u1Math.querySelector('.row:nth-child(2) strong').textContent = `1 ${u}²`;
+}
+u1Sel.addEventListener('change', updateU1);
+
+// ====================== Panel 2 — Rectangle ======================
+const bSlider = document.getElementById('bSlider');
+const hSlider = document.getElementById('hSlider');
+const u2Sel = document.getElementById('u2');
+const svg2 = document.getElementById('svg2');
+function drawRect() {
+    const b = parseInt(bSlider.value);
+    const h = parseInt(hSlider.value);
+    const u = u2Sel.value;
+    document.getElementById('bLbl').textContent = b;
+    document.getElementById('hLbl').textContent = h;
+    document.getElementById('u2Lbl').textContent = u;
+    const cell = Math.min(380 / Math.max(b,1), 230 / Math.max(h,1), 30);
+    const W = b * cell, H = h * cell;
+    const x0 = (420 - W) / 2;
+    const y0 = (280 - H) / 2;
+    let s = '';
+    for (let r = 0; r < h; r++) {
+        for (let c = 0; c < b; c++) {
+            s += `<rect x="${x0 + c*cell}" y="${y0 + r*cell}" width="${cell}" height="${cell}" fill="#bee3f8" stroke="#1565c0" stroke-width="1"/>`;
+        }
+    }
+    s += `<text x="${x0 + W/2}" y="${y0 - 8}" text-anchor="middle" font-size="13" fill="#c62828" font-weight="bold">${b} ${u}</text>`;
+    s += `<text x="${x0 - 8}" y="${y0 + H/2 + 4}" text-anchor="end" font-size="13" fill="#c62828" font-weight="bold">${h} ${u}</text>`;
+    svg2.innerHTML = s;
+
+    const area = b * h;
+    document.getElementById('p2Area').textContent = `${area} ${u}²`;
+    document.getElementById('p2AreaExpand').textContent = `${b} ${u} × ${h} ${u} = ${area} ${u}²`;
+    document.getElementById('p2UnitMath').textContent = `${u} × ${u} = ${u}²`;
+}
+[bSlider, hSlider, u2Sel].forEach(el => el.addEventListener('input', drawRect));
+
+// ====================== Panel 3 — Parallelogram → Rectangle ======================
+const p3b = document.getElementById('p3b');
+const p3h = document.getElementById('p3h');
+const p3s = document.getElementById('p3s');
+const svg3 = document.getElementById('svg3');
+let p3Animating = false;
+function drawPar(progress = 0) {
+    // progress 0 → parallelogram; 1 → rectangle
+    const b = parseInt(p3b.value);
+    const h = parseInt(p3h.value);
+    const slant = parseInt(p3s.value);
+    document.getElementById('p3bLbl').textContent = b;
+    document.getElementById('p3hLbl').textContent = h;
+    document.getElementById('p3sLbl').textContent = slant;
+    const scale = 18;
+    const W = b * scale, H = h * scale, S = slant * scale * (1 - progress);
+    const x0 = (460 - (W + slant*scale)) / 2;
+    const y0 = (260 - H) / 2;
+
+    // Main body (sliced — the rectangle interior excluding the slid-off triangle)
+    const mainPoints = [
+        [x0 + S, y0 + H],            // bottom-left
+        [x0 + W, y0 + H],            // bottom-right
+        [x0 + W + S, y0],            // top-right
+        [x0 + S * 2, y0]             // top-left
+    ];
+
+    // Slid triangle (left side) — original parallelogram tip
+    const triLeftStart = [
+        [x0, y0 + H],
+        [x0 + S, y0 + H],
+        [x0 + S * 2, y0]
+    ];
+    // Slid triangle (right side after slide) — moved to opposite end
+    const triRightEnd = [
+        [x0 + W, y0 + H],
+        [x0 + W + S, y0 + H],
+        [x0 + W + S, y0]
+    ];
+    // Interpolate position of moving triangle
+    const tri = triLeftStart.map((p, i) => {
+        const t = triRightEnd[i];
+        return [p[0] + (t[0] - p[0]) * progress, p[1] + (t[1] - p[1]) * progress];
+    });
+
+    let s = '';
+    // Outer parallelogram outline (ghost)
+    if (progress < 1) {
+        const ox0 = x0, oy0 = y0 + H, ox1 = ox0 + W, oy1 = oy0;
+        const ox2 = ox0 + W + slant*scale, oy2 = oy0 - H, ox3 = ox0 + slant*scale, oy3 = oy0 - H;
+        s += `<polygon points="${ox0},${oy0} ${ox1},${oy1} ${ox2},${oy2} ${ox3},${oy3}" fill="none" stroke="#94a3b8" stroke-dasharray="4,3" stroke-width="1"/>`;
+    }
+    // Main body
+    s += `<polygon points="${mainPoints.map(p => p.join(',')).join(' ')}" fill="#fff3b0" stroke="#1565c0" stroke-width="2"/>`;
+    // Moving triangle
+    s += `<polygon points="${tri.map(p => p.join(',')).join(' ')}" fill="#ffd8a8" stroke="#c62828" stroke-width="2"/>`;
+    // height marker
+    s += `<line x1="${x0 + S*2 - 6}" y1="${y0}" x2="${x0 + S*2 - 6}" y2="${y0 + H}" stroke="#c62828" stroke-width="1" stroke-dasharray="3,2"/>`;
+    s += `<text x="${x0 + S*2 - 12}" y="${y0 + H/2 + 4}" text-anchor="end" font-size="12" fill="#c62828" font-weight="bold">${h}</text>`;
+    s += `<text x="${x0 + (W + S*(1-progress))/2 + S}" y="${y0 + H + 18}" text-anchor="middle" font-size="12" fill="#c62828" font-weight="bold">${b} (base)</text>`;
+
+    svg3.innerHTML = s;
+
+    const area = b * h;
+    document.getElementById('p3Area').textContent = `${area} m²`;
+    document.getElementById('p3Note').textContent = `${b} × ${h} = ${area} — slant doesn't matter, perpendicular h does.`;
+}
+[p3b, p3h, p3s].forEach(el => el.addEventListener('input', () => { if (!p3Animating) drawPar(0); }));
+document.getElementById('p3Go').addEventListener('click', () => {
+    if (p3Animating) return;
+    p3Animating = true;
+    let t = 0;
+    const id = setInterval(() => {
+        t += 0.025;
+        if (t >= 1) { t = 1; clearInterval(id); p3Animating = false; setTimeout(() => drawPar(0), 1600); }
+        drawPar(t);
+    }, 25);
+});
+
+// ====================== Panel 4 — Trapezoid → Parallelogram ======================
+const p4b1 = document.getElementById('p4b1');
+const p4b2 = document.getElementById('p4b2');
+const p4h = document.getElementById('p4h');
+const svg4 = document.getElementById('svg4');
+let p4Animating = false;
+function drawTrap(progress = 0) {
+    // progress 0 → single trapezoid only; 1 → flipped copy attached forming parallelogram
+    const b1 = parseInt(p4b1.value);
+    const b2 = parseInt(p4b2.value);
+    const h = parseInt(p4h.value);
+    document.getElementById('p4b1Lbl').textContent = b1;
+    document.getElementById('p4b2Lbl').textContent = b2;
+    document.getElementById('p4hLbl').textContent = h;
+    const scale = 16;
+    const H = h * scale;
+    const B1 = b1 * scale, B2 = b2 * scale;
+    const totalW = B1 + B2 + 20;
+    const x0 = (460 - totalW) / 2;
+    const y0 = (260 - H) / 2;
+
+    // Trapezoid 1 (original, sitting bottom-left)
+    // top side b1 starts at offset to keep trapezoid centered
+    const offset1 = (B2 - B1) / 2;
+    const t1 = [
+        [x0 + offset1, y0],          // top-left
+        [x0 + offset1 + B1, y0],     // top-right
+        [x0 + B2, y0 + H],           // bottom-right
+        [x0, y0 + H]                 // bottom-left
+    ];
+
+    // Trapezoid 2 final (flipped & placed to the right to form parallelogram)
+    // The flipped copy's bottom (b2) aligns with original's top (b1), shifted right
+    // Result is parallelogram of base b1+b2 and height h
+    // Original's top-right corner = (x0 + offset1 + B1, y0)
+    // Flipped trapezoid:
+    //   - "bottom" of flipped = "top" of original (b1), but rotated 180°
+    //   - Sits to the right of original
+    // Parallelogram: starting from (x0, y0+H), going (x0+B1+B2, y0+H) bottom, (x0+B1+B2+offset1, y0) topright (skewed), etc.
+    // Actually we want the joined shape to look like a parallelogram. Let's compute final position of the flipped copy:
+    const t2Final = [
+        [x0 + offset1 + B1, y0],     // top-left (= original's top-right)
+        [x0 + offset1 + B1 + B2, y0],// top-right
+        [x0 + B2 + B1, y0 + H],      // bottom-right
+        [x0 + B2, y0 + H]            // bottom-left (= original's bottom-right)
+    ];
+
+    // Start position of trapezoid 2 (flipped, off to the right initially)
+    const t2Start = [
+        [x0 + offset1 + B1 + 80, y0],
+        [x0 + offset1 + B1 + 80 + B2, y0],
+        [x0 + B2 + B1 + 80, y0 + H],
+        [x0 + B2 + 80, y0 + H]
+    ];
+
+    // Interpolate
+    const t2 = t2Start.map((p, i) => {
+        const f = t2Final[i];
+        return [p[0] + (f[0] - p[0]) * progress, p[1] + (f[1] - p[1]) * progress];
+    });
+
+    let s = '';
+    // Ghost parallelogram (when fully assembled)
+    if (progress > 0.7) {
+        s += `<polygon points="${t1.map(p=>p.join(',')).join(' ')} ${t2[1].join(',')} ${t2[2].join(',')}" fill="none" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    }
+    // Trapezoid 1
+    s += `<polygon points="${t1.map(p=>p.join(',')).join(' ')}" fill="#cdebd6" stroke="#1565c0" stroke-width="2"/>`;
+    // Trapezoid 2 (flipped copy — shown semitransparent, color pink)
+    s += `<polygon points="${t2.map(p=>p.join(',')).join(' ')}" fill="#fce7f3" stroke="#ec4899" stroke-width="2" opacity="0.85"/>`;
+
+    // Labels on trapezoid 1
+    s += `<text x="${x0 + offset1 + B1/2}" y="${y0 - 6}" text-anchor="middle" font-size="12" fill="#c62828" font-weight="bold">b₁ = ${b1}</text>`;
+    s += `<text x="${x0 + B2/2}" y="${y0 + H + 16}" text-anchor="middle" font-size="12" fill="#c62828" font-weight="bold">b₂ = ${b2}</text>`;
+    s += `<text x="${x0 - 8}" y="${y0 + H/2 + 4}" text-anchor="end" font-size="12" fill="#c62828" font-weight="bold">h = ${h}</text>`;
+
+    // When fully assembled, show parallelogram dimensions
+    if (progress > 0.95) {
+        s += `<text x="${x0 + (B1+B2)/2}" y="${y0 + H + 36}" text-anchor="middle" font-size="13" fill="#2e7d32" font-weight="bold">parallelogram base = b₁ + b₂ = ${b1+b2}</text>`;
+    }
+
+    svg4.innerHTML = s;
+
+    const area = (b1 + b2) * h / 2;
+    document.getElementById('p4Area').textContent = `${area} m²`;
+    document.getElementById('p4Steps').textContent = `(${b1} + ${b2}) × ${h} / 2 = ${(b1+b2)*h} / 2 = ${area}`;
+}
+[p4b1, p4b2, p4h].forEach(el => el.addEventListener('input', () => { if (!p4Animating) drawTrap(0); }));
+document.getElementById('p4Go').addEventListener('click', () => {
+    if (p4Animating) return;
+    p4Animating = true;
+    let t = 0;
+    const id = setInterval(() => {
+        t += 0.02;
+        if (t >= 1) { t = 1; clearInterval(id); p4Animating = false; setTimeout(() => drawTrap(0), 1800); }
+        drawTrap(t);
+    }, 25);
+});
+
+// ====================== First draw ======================
+updateU1();
+drawRect();
+drawPar(0);
+drawTrap(0);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  Answer Key — Area of Rectangle, Triangle, Parallelogram, Trapezoid
+  Isaac Lee · 6th grade HM · 2026-05-20
+  ----------------------------------------------------------------------------
+  Tone: every solution shows the VISUAL/CONCEPT first, then the equation.
+  No HTML footer. Page-break-inside: avoid on every answer block.
+  ----------------------------------------------------------------------------
+  ANSWER SUMMARY:
+   1) 30 m²        6) 20 km²      11) 96 km²      16) 17.55 m²
+   2) 144 yd²      7) 23.4 in²    12) 48 m²       17) 8 yd²
+   3) 28 cm²       8) 34.8 km²    13) 126 cm²     18) 24 1/9 mm²
+   4) 144 in²      9) 20 yd²      14) 18 cm²      19) b1 = 14, b2 = 18 cm
+   5) 26 25/36 mm² 10) 48.5 yd²   15) 27.5 mm²    20) 70 m²
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Answer Key — Area of Shapes — Isaac Lee 2026-05-20</title>
+<script>
+window.MathJax = { tex: { inlineMath: [['$','$'], ['\\(','\\)']] } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+@page { size: letter; margin: 0.5in; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fafafa; }
+body { font-family: 'Times New Roman', serif; color: #000; font-size: 10pt; line-height: 1.5; }
+.page { max-width: 720px; margin: 0 auto; padding: 60px 50px 40px 50px; background: #fff; }
+.page-break { page-break-before: always; break-before: page; }
+@media print {
+    html, body { background: #fff; }
+    .page { max-width: none; padding: 0.55in 0.55in 0.45in 0.55in; margin: 0; box-shadow: none; }
+    .answer-block { page-break-inside: avoid !important; break-inside: avoid !important; }
+    .part-header, .problem-header, h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+    .page-break { page-break-before: always; break-before: page; }
+}
+
+:root {
+    --color-primary: #1565c0;
+    --color-primary-dark: #0d47a1;
+    --color-accent: #00838f;
+    --color-final-answer: #2e7d32;
+    --color-warning: #c62828;
+    --color-muted: #555;
+    --color-rule: #ccc;
+}
+
+.header { text-align: center; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 2px solid var(--color-primary); }
+.school-name { font-size: 8pt; letter-spacing: 4px; color: var(--color-primary); font-weight: bold; }
+.subject-tag, .key-tag { display: inline-block; padding: 2px 10px; font-size: 8pt; letter-spacing: 2px; margin: 5px 3px 8px 3px; font-weight: bold; }
+.subject-tag { border: 1.5px solid var(--color-primary); color: var(--color-primary); }
+.key-tag { border: 1.5px solid var(--color-warning); color: var(--color-warning); }
+h1 { font-size: 14pt; margin: 6px 0 8px 0; font-weight: bold; line-height: 1.3; }
+.info { display: flex; justify-content: space-between; font-size: 10pt; margin-top: 6px; }
+
+.part-header { font-size: 13pt; font-weight: bold; color: var(--color-primary); margin: 18px 0 6px 0; padding-bottom: 3px; border-bottom: 2px solid var(--color-primary); }
+
+.answer-block {
+    margin: 10px 0;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+.problem-header { font-weight: bold; color: var(--color-primary); font-size: 10.5pt; margin-bottom: 4px; }
+.problem-text { font-size: 9.5pt; padding: 5px 10px; background: #f4f8fc; border-left: 3px solid #bbb; margin-bottom: 6px; line-height: 1.5; }
+.concept-tag { display: inline-block; font-size: 8pt; padding: 1px 7px; margin: 1px 2px 4px 0; border: 1px solid var(--color-primary); color: var(--color-primary); border-radius: 10px; }
+.solution { padding-left: 8px; border-left: 3px solid var(--color-final-answer); margin-top: 4px; }
+.solution-step { margin: 3px 0; font-size: 9.5pt; line-height: 1.55; }
+.solution-step .lbl { font-weight: bold; color: var(--color-accent); font-size: 8.5pt; letter-spacing: 0.3px; margin-right: 4px; }
+.final-answer {
+    display: inline-block; border: 2px solid var(--color-final-answer);
+    color: var(--color-final-answer); font-weight: bold;
+    padding: 3px 10px; border-radius: 4px; margin-top: 4px; font-size: 10.5pt;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header">
+    <div class="school-name">NEWTON SCHOOL</div>
+    <span class="subject-tag">MATH</span><span class="key-tag">ANSWER KEY</span>
+    <h1>Area of Shapes &mdash; Answer Key</h1>
+    <div class="info">
+        <span><strong>Student:</strong> Isaac Lee</span>
+        <span><strong>Date:</strong> 2026-05-20</span>
+    </div>
+</div>
+
+<!-- ============== PART A ============== -->
+<div class="part-header">Part A &mdash; Rectangles &amp; Squares</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 1 &mdash; Rectangle 5 m × 6 m</div>
+    <span class="concept-tag">Multiply numbers AND units</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Visual</span> Count the 1 m² unit squares inside: 5 rows × 6 cols.</div>
+        <div class="solution-step"><span class="lbl">Math</span> $5 \, m \times 6 \, m = 30 \, m^2$ &nbsp; (number: 5·6=30; unit: m·m = m²)</div>
+    </div>
+    <div class="final-answer">30 m²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 2 &mdash; Rectangle 16 yd × 9 yd</div>
+    <span class="concept-tag">Rectangle area</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $16 \times 9 = 144$; &nbsp; $yd \times yd = yd^2$</div>
+    </div>
+    <div class="final-answer">144 yd²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 3 &mdash; Rectangle 3.5 cm × 8 cm</div>
+    <span class="concept-tag">Decimal × integer</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $3.5 \times 8 = 28$; unit cm²</div>
+    </div>
+    <div class="final-answer">28 cm²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 4 &mdash; Square side 12 in</div>
+    <span class="concept-tag">s × s = s²</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $12 \times 12 = 144$; unit in²</div>
+    </div>
+    <div class="final-answer">144 in²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 5 &mdash; Square side 5⅙ mm</div>
+    <span class="concept-tag">Mixed-number square</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Convert</span> $5\tfrac{1}{6} = \dfrac{31}{6}$</div>
+        <div class="solution-step"><span class="lbl">Square</span> $\left(\dfrac{31}{6}\right)^2 = \dfrac{961}{36}$</div>
+        <div class="solution-step"><span class="lbl">Mixed</span> $961 \div 36 = 26\,\text{remainder}\,25$ → $26\tfrac{25}{36}$</div>
+    </div>
+    <div class="final-answer">26 25/36 mm²</div>
+</div>
+
+<!-- ============== PART B ============== -->
+<div class="part-header">Part B &mdash; Triangles</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 6 &mdash; Triangle b=10 km, h=4 km</div>
+    <span class="concept-tag">Half of a rectangle</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Visual</span> The triangle fills half of a 10×4 rectangle.</div>
+        <div class="solution-step"><span class="lbl">Math</span> $\dfrac{10 \times 4}{2} = \dfrac{40}{2} = 20$; unit km²</div>
+    </div>
+    <div class="final-answer">20 km²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 7 &mdash; Triangle b=9 in, h=5.2 in</div>
+    <span class="concept-tag">Use perpendicular height (NOT slant)</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Trap</span> The 6 in is the slanted side — ignore it.</div>
+        <div class="solution-step"><span class="lbl">Math</span> $\dfrac{9 \times 5.2}{2} = \dfrac{46.8}{2} = 23.4$; unit in²</div>
+    </div>
+    <div class="final-answer">23.4 in²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 8 &mdash; Triangle b=11.6 km, h=6 km</div>
+    <span class="concept-tag">Half of rectangle</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $\dfrac{11.6 \times 6}{2} = \dfrac{69.6}{2} = 34.8$; unit km²</div>
+    </div>
+    <div class="final-answer">34.8 km²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 9 &mdash; Triangle b=8 yd, h=5 yd</div>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $\dfrac{8 \times 5}{2} = \dfrac{40}{2} = 20$; unit yd²</div>
+    </div>
+    <div class="final-answer">20 yd²</div>
+</div>
+
+<!-- ============== PART C ============== -->
+<div class="part-header">Part C &mdash; Parallelograms</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 10 &mdash; Parallelogram b=9.7 yd, h=5 yd</div>
+    <span class="concept-tag">Parallelogram = rectangle in disguise</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Visual</span> Slice the slanted end, slide it across → 9.7 × 5 rectangle.</div>
+        <div class="solution-step"><span class="lbl">Math</span> $9.7 \times 5 = 48.5$; unit yd² &nbsp; (the 5.8 yd slant is a distractor)</div>
+    </div>
+    <div class="final-answer">48.5 yd²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 11 &mdash; Parallelogram b=12 km, h=8 km</div>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $12 \times 8 = 96$; unit km²</div>
+    </div>
+    <div class="final-answer">96 km²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 12 &mdash; Parallelogram b=8 m, h=6 m</div>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $8 \times 6 = 48$; unit m²</div>
+    </div>
+    <div class="final-answer">48 m²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 13 &mdash; Parallelogram b=14 cm, h=9 cm</div>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $14 \times 9 = 126$; unit cm²</div>
+    </div>
+    <div class="final-answer">126 cm²</div>
+</div>
+
+<!-- ============== PART D ============== -->
+<div class="part-header">Part D &mdash; Trapezoids</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 14 &mdash; Trapezoid b₁=3, b₂=6, h=4 (cm)</div>
+    <span class="concept-tag">Two trapezoids → parallelogram</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Visual</span> Two of these make a 9×4 parallelogram = 36 cm². One trapezoid = half.</div>
+        <div class="solution-step"><span class="lbl">Math</span> $\dfrac{(3+6) \times 4}{2} = \dfrac{36}{2} = 18$; unit cm²</div>
+    </div>
+    <div class="final-answer">18 cm²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 15 &mdash; Trapezoid b₁=7, b₂=4, h=5 (mm)</div>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $\dfrac{(7+4) \times 5}{2} = \dfrac{55}{2} = 27.5$; unit mm²</div>
+    </div>
+    <div class="final-answer">27.5 mm²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 16 &mdash; Trapezoid b₁=6, b₂=3, h=3.9 (m)</div>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $\dfrac{(6+3) \times 3.9}{2} = \dfrac{9 \times 3.9}{2} = \dfrac{35.1}{2} = 17.55$; unit m²</div>
+    </div>
+    <div class="final-answer">17.55 m²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 17 &mdash; Trapezoid b₁=4, b₂=1, h=3.2 (yd)</div>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $\dfrac{(4+1) \times 3.2}{2} = \dfrac{5 \times 3.2}{2} = \dfrac{16}{2} = 8$; unit yd²</div>
+    </div>
+    <div class="final-answer">8 yd²</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 18 &mdash; Trapezoid b₁=7, b₂=3⅓, h=4⅔ (mm)</div>
+    <span class="concept-tag">Mixed-number trapezoid</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Convert</span> $b_2 = \dfrac{10}{3}$, $\; h = \dfrac{14}{3}$, $\; b_1 = 7 = \dfrac{21}{3}$</div>
+        <div class="solution-step"><span class="lbl">Sum</span> $b_1 + b_2 = \dfrac{21}{3} + \dfrac{10}{3} = \dfrac{31}{3}$</div>
+        <div class="solution-step"><span class="lbl">Times h</span> $\dfrac{31}{3} \times \dfrac{14}{3} = \dfrac{434}{9}$</div>
+        <div class="solution-step"><span class="lbl">Half</span> $\dfrac{434}{9} \div 2 = \dfrac{434}{18} = \dfrac{217}{9} = 24\tfrac{1}{9}$</div>
+    </div>
+    <div class="final-answer">24 1/9 mm²</div>
+</div>
+
+<!-- ============== PART E ============== -->
+<div class="part-header">Part E &mdash; Word Problems</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 19 &mdash; Trapezoid: area = 96 cm², h = 6 cm, b₂ = b₁ + 4. Find b₁, b₂.</div>
+    <span class="concept-tag">Reverse the formula</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Setup</span> $\dfrac{(b_1 + b_2) \times 6}{2} = 96 \Rightarrow (b_1 + b_2) \times 3 = 96$</div>
+        <div class="solution-step"><span class="lbl">Solve</span> $b_1 + b_2 = 32$</div>
+        <div class="solution-step"><span class="lbl">Substitute</span> $b_1 + (b_1 + 4) = 32 \Rightarrow 2b_1 = 28 \Rightarrow b_1 = 14$</div>
+        <div class="solution-step"><span class="lbl">Therefore</span> $b_2 = 14 + 4 = 18$</div>
+    </div>
+    <div class="final-answer">b₁ = 14 cm, b₂ = 18 cm</div>
+</div>
+
+<div class="answer-block">
+    <div class="problem-header">Problem 20 &mdash; Parallelogram floor 14 m × 5 m</div>
+    <span class="concept-tag">Parallelogram = rectangle</span>
+    <div class="solution">
+        <div class="solution-step"><span class="lbl">Math</span> $14 \times 5 = 70$; unit m²</div>
+    </div>
+    <div class="final-answer">70 m² of carpet</div>
+</div>
+
+</div>
+</body>
+</html>
