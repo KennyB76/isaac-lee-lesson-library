@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isaac's Circle Discovery Lab</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- polyfill.io removed (2024 supply-chain shutdown · blocked by all browsers · caused window.load stuck) -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at center, #1a1f3a 0%, #0d1123 100%);
+            color: #e0e6ff;
+            overflow: hidden;
+            position: relative;
+        }
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        #ui-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #header h1 {
+            font-size: 2.5em;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            margin-bottom: 10px;
+        }
+        #stage-title {
+            font-size: 1.3em;
+            color: #9fa8da;
+            margin: 10px 0;
+        }
+        #canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        #controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 15px 35px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        #message-box {
+            background: rgba(30, 36, 63, 0.8);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 800px;
+            font-size: 1.2em;
+            line-height: 1.6;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .vocab-highlight {
+            color: #00d4ff;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+        #vocab-box {
+            position: fixed;
+            right: 20px;
+            top: 100px;
+            background: rgba(20, 25, 45, 0.9);
+            border: 2px solid #764ba2;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateX(350px);
+        }
+        #vocab-box.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .vocab-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        .vocab-item:last-child {
+            border-bottom: none;
+        }
+        .vocab-term {
+            color: #00d4ff;
+            font-weight: 700;
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+        .vocab-def {
+            color: #c5cae9;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        #mute-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 36, 63, 0.8);
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.5em;
+            z-index: 100;
+        }
+        #hint-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            font-size: 0.9em;
+            padding: 10px 20px;
+        }
+        #stage4-table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: rgba(20, 25, 45, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #stage4-table th,
+        #stage4-table td {
+            padding: 15px 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        #stage4-table th {
+            background: rgba(102, 126, 234, 0.3);
+            color: #00d4ff;
+            font-weight: 700;
+        }
+        #stage4-table td {
+            color: #e0e6ff;
+            font-size: 1.1em;
+        }
+        #celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5em;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+        .slider-container {
+            margin: 20px auto;
+            max-width: 400px;
+        }
+        .slider-container label {
+            display: block;
+            margin-bottom: 10px;
+            color: #9fa8da;
+        }
+        .slider-container input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: rgba(102, 126, 234, 0.3);
+            outline: none;
+            border-radius: 5px;
+        }
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00d4ff;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="starfield"></div>
+
+    <button id="mute-btn" onclick="toggleMute()">🔊</button>
+
+    <div id="ui-container">
+        <div id="header">
+            <h1>Circle Discovery Lab</h1>
+            <div id="stage-title">Loading...</div>
+        </div>
+
+        <div id="canvas-container"></div>
+
+        <div id="message-box"></div>
+
+        <div id="controls">
+            <button class="btn" id="next-btn" onclick="nextStage()">Next</button>
+            <button class="btn" id="hint-btn" onclick="showHint()" style="display: none;">Hint</button>
+        </div>
+    </div>
+
+    <div id="vocab-box"></div>
+    <div id="celebration"></div>
+
+    <script>
+        // Audio synthesis
+        let audioCtx = null;
+        let isMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('mute-btn').textContent = isMuted ? '🔇' : '🔊';
+        }
+
+        function playSound(freq, duration = 0.1, type = 'sine') {
+            if (isMuted || !audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = freq;
+            osc.type = type;
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playChime() {
+            playSound(523.25, 0.2);
+            setTimeout(() => playSound(659.25, 0.2), 100);
+        }
+
+        function playPop() {
+            playSound(800, 0.05, 'square');
+        }
+
+        function playFanfare() {
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((note, i) => {
+                setTimeout(() => playSound(note, 0.3), i * 150);
+            });
+        }
+
+        // Starfield
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
+            }
+        }
+
+        // Vocabulary
+        const vocabulary = [
+            { term: 'POINT', def: 'A single spot — no size, just a location.' },
+            { term: 'EQUIDISTANCE', def: '"Same distance" — every point on a circle is equidistant from center.' },
+            { term: 'CENTER', def: 'The middle of the circle.' },
+            { term: 'RADIUS', def: 'Distance from center to edge. ("r")' },
+            { term: 'CHORD', def: 'A line connecting any two points on the circle.' },
+            { term: 'DIAMETER', def: 'The LONGEST chord — passes through center. (= 2 × radius)' }
+        ];
+
+        function showVocab() {
+            const vocabBox = document.getElementById('vocab-box');
+            let html = '<h3 style="color: #00d4ff; margin-bottom: 15px;">Circle Vocabulary</h3>';
+            vocabulary.forEach(v => {
+                html += `<div class="vocab-item">
+                    <div class="vocab-term">${v.term}</div>
+                    <div class="vocab-def">${v.def}</div>
+                </div>`;
+            });
+            vocabBox.innerHTML = html;
+            vocabBox.classList.add('visible');
+        }
+
+        // Stage management
+        let currentStage = 0;
+        const stages = [
+            { title: 'Stage 0: Opening', init: initStage0 },
+            { title: 'Stage 1: What IS a Circle?', init: initStage1 },
+            { title: 'Stage 2: Pencil + String Compass', init: initStage2 },
+            { title: 'Stage 3: Chord vs Diameter Hunt', init: initStage3 },
+            { title: 'Stage 4: The Magic Number 3', init: initStage4 },
+            { title: 'Stage 5: Think About It', init: initStage5 }
+        ];
+
+        function updateStageTitle() {
+            document.getElementById('stage-title').textContent = stages[currentStage].title;
+        }
+
+        function setMessage(html) {
+            document.getElementById('message-box').innerHTML = html;
+            MathJax.typesetPromise();
+        }
+
+        function celebrate(emoji) {
+            const cel = document.getElementById('celebration');
+            cel.textContent = emoji;
+            gsap.fromTo(cel,
+                { opacity: 0, scale: 0.5 },
+                { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out' }
+            );
+            setTimeout(() => {
+                gsap.to(cel, { opacity: 0, duration: 0.5 });
+            }, 1500);
+            playFanfare();
+        }
+
+        function nextStage() {
+            if (currentStage < stages.length - 1) {
+                currentStage++;
+                updateStageTitle();
+                stages[currentStage].init();
+                playChime();
+            }
+        }
+
+        function showHint() {
+            playPop();
+            // Stage-specific hints will be implemented per stage
+        }
+
+        // p5.js sketch
+        let sketch = function(p) {
+            let centerX, centerY;
+            let points = [];
+            let stage1Radius = 150;
+            let stage2Radius = 100;
+            let stage2CenterX, stage2CenterY;
+            let stage2Drawing = false;
+            let stage2Path = [];
+            let stage3Points = [];
+            let stage3Chords = [];
+            let stage3Radius = 180;
+            let stage4Circles = [];
+            let stage4CurrentCircle = null;
+            let stage4MeasuringC = false;
+            let stage4MeasurePath = [];
+
+            p.setup = function() {
+                let canvas = p.createCanvas(900, 600);
+                canvas.parent('canvas-container');
+                centerX = p.width / 2;
+                centerY = p.height / 2;
+                stage2CenterX = centerX;
+                stage2CenterY = centerY;
+            };
+
+            p.draw = function() {
+                p.background(26, 31, 58, 200);
+
+                if (currentStage === 1) {
+                    drawStage1();
+                } else if (currentStage === 2) {
+                    drawStage2();
+                } else if (currentStage === 3) {
+                    drawStage3();
+                } else if (currentStage === 4) {
+                    drawStage4();
+                }
+            };
+
+            // Stage 1: Point clicking
+            function drawStage1() {
+                // Center point
+                p.fill(0, 212, 255);
+                p.noStroke();
+                p.circle(centerX, centerY, 15);
+                p.fill(224, 230, 255);
+                p.textAlign(p.CENTER);
+                p.textSize(14);
+                p.text('CENTER', centerX, centerY - 25);
+
+                // Radius guide circle (faint)
+                p.noFill();
+                p.stroke(102, 126, 234, 50);
+                p.strokeWeight(1);
+                p.circle(centerX, centerY, stage1Radius * 2);
+
+                // User points
+                points.forEach((pt, i) => {
+                    p.fill(159, 168, 218);
+                    p.circle(pt.x, pt.y, 8);
+
+                    // Line from center
+                    p.stroke(102, 126, 234, 100);
+                    p.strokeWeight(1);
+                    p.line(centerX, centerY, pt.x, pt.y);
+
+                    // Distance label
+                    let dist = p.dist(centerX, centerY, pt.x, pt.y);
+                    let midX = (centerX + pt.x) / 2;
+                    let midY = (centerY + pt.y) / 2;
+                    p.noStroke();
+                    p.fill(159, 168, 218);
+                    p.textSize(12);
+                    p.text(dist.toFixed(0), midX, midY);
+                });
+
+                // Emerging circle
+                if (points.length >= 5) {
+                    p.noFill();
+                    p.stroke(0, 212, 255, 150);
+                    p.strokeWeight(3);
+                    p.circle(centerX, centerY, stage1Radius * 2);
+                }
+            }
+
+            p.mousePressed = function() {
+                if (currentStage === 1 && points.length < 12) {
+                    let dist = p.dist(p.mouseX, p.mouseY, centerX, centerY);
+                    if (p.abs(dist - stage1Radius) < 30) {
+                        let angle = p.atan2(p.mouseY - centerY, p.mouseX - centerX);
+                        let x = centerX + stage1Radius * p.cos(angle);
+                        let y = centerY + stage1Radius * p.sin(angle);
+                        points.push({ x, y });
+                        playPop();
+
+                        if (points.length === 8) {
+                            celebrate('⭕');
+                            setMessage('You created a <span class="vocab-highlight">CIRCLE</span>! Every point is <span class="vocab-highlight">EQUIDISTANT</span> from the <span class="vocab-highlight">CENTER</span>.');
+                        }
+                    }
+                } else if (currentStage === 3 && stage3Points.length < 2) {
+                    let dist = p.dist(p.mouseX, p.mouseY, centerX, centerY);
+                    if (p.abs(dist - stage3Radius) < 20) {
+                        let angle = p.atan2(p.mouseY - centerY, p.mouseX - centerX);
+                        let x = centerX + stage3Radius * p.cos(angle);
+                        let y = centerY + stage3Radius * p.sin(angle);
+                        stage3Points.push({ x, y });
+                        playPop();
+
+                        if (stage3Points.length === 2) {
+                            addChord();
+                        }
+                    }
+                } else if (currentStage === 4 && stage4CurrentCircle) {
+                    stage4MeasuringC = true;
+                    stage4MeasurePath = [];
+                }
+            };
+
+            p.mouseReleased = function() {
+                if (currentStage === 2) {
+                    stage2Drawing = false;
+                }
+                if (currentStage === 4 && stage4MeasuringC) {
+                    stage4MeasuringC = false;
+                    finishCircumferenceMeasure();
+                }
+            };
+
+            // Stage 2: Compass
+            function drawStage2() {
+                // Pin
+                p.fill(255, 100, 100);
+                p.noStroke();
+                p.circle(stage2CenterX, stage2CenterY, 12);
+
+                // String
+                if (p.mouseIsPressed && p.dist(p.mouseX, p.mouseY, stage2CenterX, stage2CenterY) > 10) {
+                    stage2Drawing = true;
+                    let angle = p.atan2(p.mouseY - stage2CenterY, p.mouseX - stage2CenterX);
+                    let x = stage2CenterX + stage2Radius * p.cos(angle);
+                    let y = stage2CenterY + stage2Radius * p.sin(angle);
+                    stage2Path.push({ x, y });
+
+                    p.stroke(255, 200, 100);
+                    p.strokeWeight(2);
+                    p.line(stage2CenterX, stage2CenterY, x, y);
+
+                    // Pencil
+                    p.fill(100, 200, 255);
+                    p.circle(x, y, 8);
+                }
+
+                // Path
+                p.noFill();
+                p.stroke(0, 212, 255);
+                p.strokeWeight(3);
+                p.beginShape();
+                stage2Path.forEach(pt => p.vertex(pt.x, pt.y));
+                p.endShape();
+
+                // Radius label
+                p.noStroke();
+                p.fill(159, 168, 218);
+                p.textAlign(p.CENTER);
+                p.textSize(14);
+                p.text(`Radius: ${stage2Radius}`, stage2CenterX, stage2CenterY + stage2Radius + 30);
+            }
+
+            // Stage 3: Chord hunt
+            function drawStage3() {
+                // Circle
+                p.noFill();
+                p.stroke(102, 126, 234, 100);
+                p.strokeWeight(2);
+                p.circle(centerX, centerY, stage3Radius * 2);
+
+                // Center
+                p.fill(0, 212, 255);
+                p.noStroke();
+                p.circle(centerX, centerY, 8);
+
+                // Selected points
+                stage3Points.forEach(pt => {
+                    p.fill(255, 200, 100);
+                    p.circle(pt.x, pt.y, 10);
+                });
+
+                // Chords
+                stage3Chords.forEach(chord => {
+                    p.stroke(chord.isDiameter ? 255 : 159, chord.isDiameter ? 100 : 168, chord.isDiameter ? 255 : 218);
+                    p.strokeWeight(chord.isDiameter ? 4 : 2);
+                    p.line(chord.p1.x, chord.p1.y, chord.p2.x, chord.p2.y);
+
+                    // Length label
+                    let midX = (chord.p1.x + chord.p2.x) / 2;
+                    let midY = (chord.p1.y + chord.p2.y) / 2;
+                    p.noStroke();
+                    p.fill(224, 230, 255);
+                    p.textAlign(p.CENTER);
+                    p.textSize(14);
+                    p.text(chord.length.toFixed(1), midX, midY - 10);
+                });
+            }
+
+            function addChord() {
+                let p1 = stage3Points[0];
+                let p2 = stage3Points[1];
+                let length = p.dist(p1.x, p1.y, p2.x, p2.y);
+
+                // Check if passes through center
+                let midX = (p1.x + p2.x) / 2;
+                let midY = (p1.y + p2.y) / 2;
+                let distToCenter = p.dist(midX, midY, centerX, centerY);
+                let isDiameter = distToCenter < 10;
+
+                stage3Chords.push({ p1, p2, length, isDiameter });
+                stage3Points = [];
+
+                if (isDiameter) {
+                    celebrate('🎯');
+                    playFanfare();
+                    setMessage('<span class="vocab-highlight">DIAMETER</span> found! The longest <span class="vocab-highlight">CHORD</span> passes through the <span class="vocab-highlight">CENTER</span>. Diameter = 2 × Radius = ' + (stage3Radius * 2).toFixed(1));
+                    setTimeout(() => {
+                        document.getElementById('next-btn').disabled = false;
+                    }, 2000);
+                } else {
+                    playPop();
+                    setMessage('That\'s a <span class="vocab-highlight">CHORD</span>! Try to find the LONGEST one. Hint: it passes through the center.');
+                }
+            }
+
+            // Stage 4: Pi discovery
+            function drawStage4() {
+                stage4Circles.forEach(circle => {
+                    // Circle
+                    p.noFill();
+                    p.stroke(102, 126, 234, circle === stage4CurrentCircle ? 200 : 100);
+                    p.strokeWeight(circle === stage4CurrentCircle ? 3 : 2);
+                    p.circle(circle.x, circle.y, circle.r * 2);
+
+                    // Label
+                    p.noStroke();
+                    p.fill(159, 168, 218);
+                    p.textAlign(p.CENTER);
+                    p.textSize(12);
+                    p.text(circle.name, circle.x, circle.y - circle.r - 15);
+
+                    // Diameter line
+                    if (circle.C !== null) {
+                        p.stroke(255, 200, 100);
+                        p.strokeWeight(2);
+                        p.line(circle.x - circle.r, circle.y, circle.x + circle.r, circle.y);
+                        p.noStroke();
+                        p.fill(255, 200, 100);
+                        p.text(`d = ${circle.d.toFixed(1)}`, circle.x, circle.y + 15);
+                    }
+                });
+
+                // Measuring path
+                if (stage4MeasuringC && stage4MeasurePath.length > 0) {
+                    p.noFill();
+                    p.stroke(0, 212, 255);
+                    p.strokeWeight(3);
+                    p.beginShape();
+                    stage4MeasurePath.forEach(pt => p.vertex(pt.x, pt.y));
+                    p.endShape();
+                }
+            }
+
+            p.mouseDragged = function() {
+                if (currentStage === 4 && stage4MeasuringC && stage4CurrentCircle) {
+                    stage4MeasurePath.push({ x: p.mouseX, y: p.mouseY });
+                }
+            };
+
+            function finishCircumferenceMeasure() {
+                if (!stage4CurrentCircle || stage4MeasurePath.length < 10) return;
+
+                let totalDist = 0;
+                for (let i = 1; i < stage4MeasurePath.length; i++) {
+                    totalDist += p.dist(
+                        stage4MeasurePath[i-1].x, stage4MeasurePath[i-1].y,
+                        stage4MeasurePath[i].x, stage4MeasurePath[i].y
+                    );
+                }
+
+                stage4CurrentCircle.C = totalDist;
+                stage4CurrentCircle.ratio = totalDist / stage4CurrentCircle.d;
+                updateStage4Table();
+
+                // Move to next circle
+                let idx = stage4Circles.indexOf(stage4CurrentCircle);
+                if (idx < stage4Circles.length - 1) {
+                    stage4CurrentCircle = stage4Circles[idx + 1];
+                    setMessage(`Great! Now measure the <span class="vocab-highlight">CIRCUMFERENCE</span> of the <strong>${stage4CurrentCircle.name}</strong> circle. Click and drag around the edge.`);
+                } else {
+                    // All done
+                    celebrate('🎉');
+                    setMessage('Look at the table! <strong>C ÷ d</strong> is always the SAME number: <strong>π = 3.14159...</strong> No matter the size! This is the <span class="vocab-highlight">MAGIC NUMBER</span> of circles!');
+                    document.getElementById('next-btn').disabled = false;
+                }
+
+                stage4MeasurePath = [];
+                playChime();
+            }
+
+            function updateStage4Table() {
+                stage4Circles.forEach((circle, i) => {
+                    if (circle.C !== null) {
+                        document.getElementById(`c${i}`).textContent = circle.C.toFixed(1);
+                        document.getElementById(`d${i}`).textContent = circle.d.toFixed(1);
+                        document.getElementById(`ratio${i}`).textContent = circle.ratio.toFixed(3);
+                    }
+                });
+            }
+
+            // Expose p5 to global for stage functions
+            window.p5sketch = p;
+        };
+
+        // Stage initializers
+        function initStage0() {
+            setMessage('<h2 style="color: #00d4ff; font-size: 2em;">Hi Isaac! 👋</h2><p style="font-size: 1.3em; margin-top: 20px;">Today, you discover circles.</p><p style="margin-top: 15px; color: #9fa8da;">Get ready for an adventure in the Circle Discovery Lab!</p>');
+            document.getElementById('next-btn').disabled = false;
+            setTimeout(() => {
+                gsap.to('#message-box', { scale: 1.05, duration: 0.5, yoyo: true, repeat: 1, ease: 'sine.inOut' });
+            }, 500);
+        }
+
+        function initStage1() {
+            points = [];
+            setMessage('Click anywhere on the faint circle outline to place points. Try to place them all at the <span class="vocab-highlight">SAME DISTANCE</span> from the <span class="vocab-highlight">CENTER</span>. What shape emerges?');
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function initStage2() {
+            setMessage('Drag your mouse around the pin to draw a circle! The string length is the <span class="vocab-highlight">RADIUS</span>. You just BECAME a compass! 🧭');
+            document.getElementById('next-btn').disabled = false;
+
+            // Add slider
+            const controls = document.getElementById('controls');
+            const sliderHTML = `
+                <div class="slider-container">
+                    <label>String Length (Radius): <span id="radius-val">100</span></label>
+                    <input type="range" min="50" max="250" value="100" id="radius-slider" oninput="updateRadius(this.value)">
+                </div>
+            `;
+            controls.insertAdjacentHTML('beforebegin', sliderHTML);
+        }
+
+        function updateRadius(val) {
+            window.p5sketch.stage2Radius = parseInt(val);
+            document.getElementById('radius-val').textContent = val;
+            window.p5sketch.stage2Path = [];
+        }
+
+        function initStage3() {
+            stage3Points = [];
+            stage3Chords = [];
+            setMessage('Click TWO points on the circle to draw a <span class="vocab-highlight">CHORD</span>. Challenge: Find the LONGEST chord! (Hint: it passes through the center.)');
+            document.getElementById('next-btn').disabled = true;
+        }
+
+        function initStage4() {
+            // Create circles
+            stage4Circles = [
+                { name: 'Small', x: 150, y: 150, r: 50, d: 100, C: null, ratio: null },
+                { name: 'Medium', x: 450, y: 150, r: 80, d: 160, C: null, ratio: null },
+                { name: 'Large', x: 250, y: 400, r: 120, d: 240, C: null, ratio: null },
+                { name: 'Huge', x: 650, y: 400, r: 150, d: 300, C: null, ratio: null }
+            ];
+            stage4CurrentCircle = stage4Circles[0];
+
+            setMessage(`Click and drag your "measuring tape" around the edge of the <strong>${stage4CurrentCircle.name}</strong> circle to measure its <span class="vocab-highlight">CIRCUMFERENCE</span> (C).`);
+            document.getElementById('next-btn').disabled = true;
+
+            // Create table
+            const tableHTML = `
+                <table id="stage4-table">
+                    <thead>
+                        <tr>
+                            <th>Circle</th>
+                            <th>Circumference (C)</th>
+                            <th>Diameter (d)</th>
+                            <th>C ÷ d</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${stage4Circles.map((c, i) => `
+                            <tr>
+                                <td>${c.name}</td>
+                                <td id="c${i}">—</td>
+                                <td id="d${i}">—</td>
+                                <td id="ratio${i}">—</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('message-box').insertAdjacentHTML('afterend', tableHTML);
+        }
+
+        function initStage5() {
+            showVocab();
+            setMessage(`
+                <h2 style="color: #00d4ff; font-size: 1.8em; margin-bottom: 20px;">🤔 Isaac, here's the question to think about until next class:</h2>
+                <p style="font-size: 1.3em; line-height: 1.8; margin-bottom: 25px;">
+                    <strong style="color: #00d4ff;">WHY</strong> does <strong>C ÷ d</strong> always give us <strong>π</strong> — no matter how big or small the circle is?
+                </p>
+                <p style="font-size: 1.1em; color: #9fa8da; margin-bottom: 25px;">
+                    Try to explain it to yourself.
+                </p>
+                <p style="font-size: 0.95em; color: #c5cae9; font-style: italic;">
+                    (Hint: think about what makes a circle a circle.)
+                </p>
+                <p style="font-size: 1.2em; margin-top: 30px; color: #00d4ff;">
+                    Bring your idea to Mr. Kenny next Tuesday!
+                </p>
+                <p style="font-size: 1.5em; margin-top: 25px;">
+                    See you next week, Isaac! 🌟
+                </p>
+            `);
+            document.getElementById('next-btn').style.display = 'none';
+
+            gsap.to('#message-box', {
+                scale: 1.02,
+                duration: 2,
+                yoyo: true,
+                repeat: -1,
+                ease: 'sine.inOut'
+            });
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            initAudio();
+            createStarfield();
+            new p5(sketch);
+            updateStageTitle();
+            stages[currentStage].init();
+        });
+    </script>
+</body>
+</html>

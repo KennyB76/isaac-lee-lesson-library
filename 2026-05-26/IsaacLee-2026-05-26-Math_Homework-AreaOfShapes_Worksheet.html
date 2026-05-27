@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Math Homework: Area of Shapes (Trapezoid, Rectangle, Triangle)</title>
+<script>
+window.MathJax = {
+    tex: { inlineMath: [['$','$'],['\\(','\\)']] },
+    startup: { ready: () => { MathJax.startup.defaultReady(); } }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===== base-print.css ===== */
+.kenny-reminder { border: 2px solid var(--color-warning, #d84315); border-left: 6px solid var(--color-warning, #d84315); border-radius: 8px; padding: 14px 18px 14px 22px; margin: 18px 0 24px; background: #fffaf0; page-break-inside: avoid; break-inside: avoid; font-size: 11pt; line-height: 1.65; }
+.kenny-reminder .kr-header { display: flex; align-items: center; gap: 8px; font-weight: bold; color: var(--color-warning, #d84315); margin-bottom: 8px; font-size: 11pt; letter-spacing: 0.02em; }
+.kenny-reminder .kr-icon { font-size: 16pt; line-height: 1; }
+.kenny-reminder .kr-body { color: #1a1a1a; margin: 0; }
+.kenny-reminder .kr-body p { margin: 4px 0; }
+.kenny-reminder .kr-body strong { color: var(--color-warning, #d84315); }
+@media print {
+  .kenny-reminder { background: transparent !important; border-color: #333 !important; border-left-color: #333 !important; }
+  .kenny-reminder .kr-header, .kenny-reminder .kr-body strong { color: #000 !important; }
+}
+@page { size: letter; margin: 1in; }
+@page :left  { margin: 25mm; }
+@page :right { margin: 25mm; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fafafa; }
+body { font-family: 'Century Schoolbook', 'Times New Roman', serif; color: #000; }
+.page { max-width: 720px; margin: 0 auto; padding: 70px 50px 40px 50px; background: #fff; }
+.work-space { min-height: 1.5in; margin: 8px 0 16px 28px; border-bottom: 1px solid #ccc; }
+.work-space.sm { min-height: 0.75in; }
+.work-space.lg { min-height: 2.5in; }
+.page-break { page-break-before: always; break-before: page; }
+@media print {
+    html, body { background: #fff; }
+    .page { max-width: none; padding: 0.7in 0.6in 0.5in 0.6in; margin: 0; box-shadow: none; }
+    .problem, .answer-block, .reminder, .parent-note, .example, .word-problem, .figure-container, .graph-container { page-break-inside: avoid; break-inside: avoid; margin-bottom: 0; }
+    .part-header, .directions, .problem-header, h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+    .work-space { min-height: 1.5in; border-bottom: 1px dashed #999; border-top: none; border-left: none; border-right: none; margin-bottom: 0.25in; }
+    .work-space.sm { min-height: 0.75in; }
+    .work-space.lg { min-height: 2.5in; }
+    .page-break { page-break-before: always; break-before: page; }
+    .footer { display: block; }
+}
+
+/* ===== theme-boy.css ===== */
+:root {
+    --color-primary:        #1565c0;
+    --color-primary-dark:   #0d47a1;
+    --color-accent:         #00838f;
+    --color-header-border:  #1565c0;
+    --color-final-answer:   #2e7d32;
+    --color-warning:        #c62828;
+    --color-parent-note:    #283593;
+    --color-tag-bg:         transparent;
+    --color-tag-border:     #1565c0;
+    --color-tag-text:       #1565c0;
+    --color-muted:          #555;
+    --color-rule:           #ccc;
+}
+
+/* ===== level-middle.css ===== */
+body { font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.5; }
+.header { text-align: center; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 2px solid var(--color-header-border); }
+.school-name { font-size: 9pt; letter-spacing: 4px; color: var(--color-primary); font-weight: bold; }
+.subject-tag { display: inline-block; padding: 2px 10px; font-size: 8pt; letter-spacing: 2px; margin: 5px 3px 8px 3px; font-weight: bold; border: 1.5px solid var(--color-primary); color: var(--color-primary); }
+h1 { font-size: 15pt; margin: 6px 0 10px 0; font-weight: bold; line-height: 1.3; }
+.info { display: flex; justify-content: space-between; font-size: 10pt; margin-top: 6px; }
+.standard { font-size: 8pt; font-style: italic; margin-top: 5px; color: var(--color-muted); }
+.part-header { font-size: 12pt; font-weight: bold; color: var(--color-primary); margin: 22px 0 6px 0; padding-bottom: 3px; border-bottom: 2px solid var(--color-primary); }
+.directions { font-size: 10pt; font-style: italic; color: #333; margin-bottom: 12px; line-height: 1.5; }
+.directions strong { color: #000; font-style: normal; }
+.problem { margin: 14px 0 18px 0; font-size: 11pt; line-height: 1.6; }
+.q-num { display: inline-block; min-width: 26px; font-weight: bold; color: var(--color-primary); }
+.footer { text-align: center; font-size: 8pt; color: #666; border-top: 1px solid var(--color-rule); margin-top: 22px; padding-top: 6px; }
+
+/* ===== 6-step framework custom styles ===== */
+.problem-card {
+    border: 1.5px solid #bbb;
+    border-radius: 6px;
+    padding: 12px 16px 14px 16px;
+    margin: 18px 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+.problem-card .problem-header {
+    font-weight: bold;
+    color: var(--color-primary);
+    font-size: 12pt;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 4px;
+}
+.original-problem {
+    background: #fff8c5;
+    border-left: 4px solid #f59e0b;
+    padding: 8px 12px;
+    margin: 6px 0 12px 0;
+    font-size: 11pt;
+    line-height: 1.55;
+}
+.step {
+    margin: 8px 0 6px 0;
+    padding-left: 6px;
+}
+.step-label {
+    font-weight: bold;
+    color: var(--color-primary-dark);
+    font-size: 10.5pt;
+}
+.step-hint {
+    font-size: 9.5pt;
+    color: #555;
+    font-style: italic;
+}
+.blank-line {
+    display: inline-block;
+    border-bottom: 1.2px solid #333;
+    min-width: 250px;
+    height: 18px;
+    vertical-align: bottom;
+    margin: 0 4px;
+}
+.blank-line.short { min-width: 80px; }
+.blank-line.medium { min-width: 160px; }
+.blank-line.long { min-width: 340px; }
+.given-find-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 5px 0;
+    font-size: 10.5pt;
+}
+.gf-label {
+    font-weight: bold;
+    min-width: 60px;
+    color: #333;
+}
+.draw-box {
+    border: 1.2px dashed #888;
+    height: 1.6in;
+    margin: 6px 0 4px 0;
+    border-radius: 4px;
+    position: relative;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 18px,
+            #f0f0f0 18px,
+            #f0f0f0 19px
+        );
+}
+.draw-hint {
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+    font-size: 8pt;
+    color: #999;
+    font-style: italic;
+}
+.calc-line {
+    margin: 4px 0;
+    padding-left: 10px;
+    font-size: 10.5pt;
+}
+.final-box {
+    display: inline-block;
+    border: 2px solid var(--color-final-answer);
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-top: 4px;
+    font-weight: bold;
+    color: var(--color-final-answer);
+    min-width: 200px;
+    min-height: 26px;
+}
+.final-box .blank-line { border-bottom-color: var(--color-final-answer); }
+@media print {
+    .problem-card { border-color: #333; }
+    .original-problem { background: transparent !important; border-left-color: #000; }
+    .draw-box { background: none; border-color: #333; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header">
+    <div class="school-name">NEWTON SCHOOL</div>
+    <span class="subject-tag">MATH</span>
+    <h1>Area of Shapes: Trapezoid, Rectangle &amp; Triangle</h1>
+    <div class="info">
+        <span><strong>Student:</strong> Isaac Lee</span>
+        <span><strong>Date:</strong> 2026-05-26</span>
+    </div>
+    <div class="standard"><strong>Standard:</strong> CCSS.MATH.CONTENT.6.G.A.1 — Find the area of right triangles, other triangles, special quadrilaterals, and polygons by composing into rectangles or decomposing into triangles and other shapes.</div>
+</div>
+
+<div class="kenny-reminder">
+    <div class="kr-header"><span class="kr-icon">⭐</span> Mr. Kenny's 6 Steps (use them every time!)</div>
+    <div class="kr-body">
+        <p><strong>1. IDENTIFY</strong> what's given and what's asked (read the <strong>LAST line first!</strong>)</p>
+        <p><strong>2. DRAW</strong> the shape — label everything</p>
+        <p><strong>3. PICK</strong> a formula — which one fits this shape?</p>
+        <p><strong>4. PLUG IN</strong> the numbers (substitute carefully)</p>
+        <p><strong>5. CALCULATE</strong> step by step (show every multiply and add)</p>
+        <p><strong>6. FINAL</strong> answer — don't forget <strong>units!</strong></p>
+    </div>
+</div>
+
+<div class="part-header">Part A — Basic Area Practice</div>
+<div class="directions"><strong>Directions:</strong> Use all 6 steps for each problem. Show every line of work — no shortcuts. Don't forget your units!</div>
+
+<!-- ========================= Problem #1 ========================= -->
+<div class="problem problem-card">
+    <div class="problem-header">Problem #1</div>
+    <div class="original-problem">
+        A trapezoid has a top base of 0.6 in, a bottom base of 2 in, and a height of 1.7 in. Find the area of the trapezoid.
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 1 — IDENTIFY</span> <span class="step-hint">(read the LAST line first!)</span>
+        <div class="given-find-row"><span class="gf-label">Given:</span><span class="blank-line long"></span></div>
+        <div class="given-find-row"><span class="gf-label">Find:</span><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 2 — DRAW the shape</span> <span class="step-hint">(label every side and the height)</span>
+        <div class="draw-box"><span class="draw-hint">draw &amp; label here</span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 3 — PICK a formula</span> <span class="step-hint">(which one fits this shape?)</span>
+        <div class="calc-line">Formula:  $A = $ <span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 4 — PLUG IN</span> <span class="step-hint">(substitute the numbers)</span>
+        <div class="calc-line"><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 5 — CALCULATE</span> <span class="step-hint">(show every multiply and add)</span>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 6 — FINAL ANSWER</span> <span class="step-hint">(don't forget units!)</span>
+        <div class="calc-line">$A = $ <span class="final-box"><span class="blank-line" style="min-width:170px;border:none;"></span></span></div>
+    </div>
+</div>
+
+<!-- ========================= Problem #2 ========================= -->
+<div class="problem problem-card">
+    <div class="problem-header">Problem #2</div>
+    <div class="original-problem">
+        A rectangle has a width of 2.3 ft and a length of 5 ft. Find the area of the rectangle.
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 1 — IDENTIFY</span> <span class="step-hint">(read the LAST line first!)</span>
+        <div class="given-find-row"><span class="gf-label">Given:</span><span class="blank-line long"></span></div>
+        <div class="given-find-row"><span class="gf-label">Find:</span><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 2 — DRAW the shape</span> <span class="step-hint">(label every side)</span>
+        <div class="draw-box"><span class="draw-hint">draw &amp; label here</span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 3 — PICK a formula</span>
+        <div class="calc-line">Formula:  $A = $ <span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 4 — PLUG IN</span>
+        <div class="calc-line"><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 5 — CALCULATE</span>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 6 — FINAL ANSWER</span> <span class="step-hint">(units!)</span>
+        <div class="calc-line">$A = $ <span class="final-box"><span class="blank-line" style="min-width:170px;border:none;"></span></span></div>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================= Problem #3 ========================= -->
+<div class="problem problem-card">
+    <div class="problem-header">Problem #3</div>
+    <div class="original-problem">
+        A trapezoid has a top base of 4.6 m, a bottom base of 1.6 m, and a height of 3.4 m. Find the area of the trapezoid.
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 1 — IDENTIFY</span>
+        <div class="given-find-row"><span class="gf-label">Given:</span><span class="blank-line long"></span></div>
+        <div class="given-find-row"><span class="gf-label">Find:</span><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 2 — DRAW the shape</span>
+        <div class="draw-box"><span class="draw-hint">draw &amp; label here</span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 3 — PICK a formula</span>
+        <div class="calc-line">Formula:  $A = $ <span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 4 — PLUG IN</span>
+        <div class="calc-line"><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 5 — CALCULATE</span>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 6 — FINAL ANSWER</span>
+        <div class="calc-line">$A = $ <span class="final-box"><span class="blank-line" style="min-width:170px;border:none;"></span></span></div>
+    </div>
+</div>
+
+<!-- ========================= Problem #4 ========================= -->
+<div class="problem problem-card">
+    <div class="problem-header">Problem #4</div>
+    <div class="original-problem">
+        A triangle has a base of 4 m and a height of 2.7 m. Find the area of the triangle.
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 1 — IDENTIFY</span>
+        <div class="given-find-row"><span class="gf-label">Given:</span><span class="blank-line long"></span></div>
+        <div class="given-find-row"><span class="gf-label">Find:</span><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 2 — DRAW the shape</span> <span class="step-hint">(remember: base and height are perpendicular!)</span>
+        <div class="draw-box"><span class="draw-hint">draw &amp; label here</span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 3 — PICK a formula</span>
+        <div class="calc-line">Formula:  $A = $ <span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 4 — PLUG IN</span>
+        <div class="calc-line"><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 5 — CALCULATE</span>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 6 — FINAL ANSWER</span>
+        <div class="calc-line">$A = $ <span class="final-box"><span class="blank-line" style="min-width:170px;border:none;"></span></span></div>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="part-header">Part B — Apply Your Skills</div>
+<div class="directions"><strong>Directions:</strong> This one needs you to <em>work backwards</em>. You're given the area — find the bases. Use all 6 steps. Take your time and write every line.</div>
+
+<!-- ========================= Problem #5 ========================= -->
+<div class="problem problem-card">
+    <div class="problem-header">Problem #5 &nbsp;<span style="font-size:9pt;color:#666;">(application)</span></div>
+    <div class="original-problem">
+        A trapezoidal garden has an area of 96 cm² and a height of 6 cm. The longer base is 4 cm longer than the shorter base. Find the lengths of <strong>both</strong> bases ($b_1$ and $b_2$).
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 1 — IDENTIFY</span> <span class="step-hint">(read the LAST line first — what do you need to find?)</span>
+        <div class="given-find-row"><span class="gf-label">Given:</span><span class="blank-line long"></span></div>
+        <div class="given-find-row"><span class="gf-label" style="min-width:auto;">&nbsp;</span><span class="blank-line long"></span></div>
+        <div class="given-find-row"><span class="gf-label">Find:</span><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 2 — DRAW the shape</span> <span class="step-hint">(label the shorter base $b_1$, the longer base $b_2 = b_1 + 4$, and the height)</span>
+        <div class="draw-box" style="height:2in;"><span class="draw-hint">draw &amp; label here</span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 3 — PICK a formula</span>
+        <div class="calc-line">Formula:  $A = $ <span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 4 — PLUG IN</span> <span class="step-hint">(substitute A, h, and write $b_2$ in terms of $b_1$)</span>
+        <div class="calc-line"><span class="blank-line long"></span></div>
+        <div class="calc-line"><span class="blank-line long"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 5 — CALCULATE / SOLVE</span> <span class="step-hint">(solve for $b_1$, one step at a time)</span>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line"><span class="blank-line medium"></span> = <span class="blank-line short"></span></div>
+        <div class="calc-line">$b_1 = $ <span class="blank-line short"></span></div>
+    </div>
+
+    <div class="step">
+        <span class="step-label">Step 6 — FINAL ANSWER</span> <span class="step-hint">(both bases, with units!)</span>
+        <div class="calc-line">$b_1 = $ <span class="final-box"><span class="blank-line" style="min-width:130px;border:none;"></span></span> &nbsp;(shorter base)</div>
+        <div class="calc-line" style="margin-top:8px;">$b_2 = $ <span class="final-box"><span class="blank-line" style="min-width:130px;border:none;"></span></span> &nbsp;(longer base)</div>
+    </div>
+</div>
+
+<div class="footer">
+    Created by Newton School 2026-05-26 &copy; Copyright
+</div>
+
+</div>
+<script>
+/* === inlined content of assets/editor-widget.js === */
+(function () {
+  'use strict';
+  var pageSlug = (function () {
+    var s = window.location.pathname.split('/').pop() || 'worksheet';
+    return s.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 60);
+  })();
+  var C_PREFIX = 'hw_comment_' + pageSlug + '_';
+  var A_KEY    = 'hw_annot_' + pageSlug;
+  var S_KEY    = 'hw_sticky_' + pageSlug;
+  function lsGet(k) { try { return localStorage.getItem(k); } catch(e){ return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e){} }
+  function lsRm(k)  { try { localStorage.removeItem(k); } catch(e){} }
+  function lsGetJSON(k) { try { return JSON.parse(lsGet(k) || '[]'); } catch(e){ return []; } }
+  function lsSetJSON(k, v) { lsSet(k, JSON.stringify(v)); }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var counter = 0;
+  function nextBid() { return 'b' + (++counter); }
+  function wrapCommentable(el) {
+    if (el.classList.contains('ed-commentable')) return;
+    var bid = nextBid();
+    el.classList.add('ed-commentable');
+    el.setAttribute('data-bid', bid);
+    var btn = document.createElement('button');
+    btn.className = 'ed-comment-btn'; btn.type = 'button'; btn.title = 'Add comment'; btn.textContent = '✏';
+    btn.addEventListener('click', function () { toggleCommentBox(el, bid); });
+    el.appendChild(btn);
+    var dot = document.createElement('span');
+    dot.className = 'ed-dot'; dot.hidden = true;
+    el.appendChild(dot);
+    var saved = lsGet(C_PREFIX + bid);
+    if (saved && saved.trim()) { dot.hidden = false; btn.classList.add('has-comment'); el.classList.add('has-ed-comment'); }
+  }
+  function initCommentableBlocks() {
+    ['.problem','.answer-block','.example','.part-header','.word-problem'].forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(wrapCommentable);
+    });
+  }
+  function toggleCommentBox(el, bid) {
+    var existing = el.querySelector('.ed-comment-box');
+    if (existing) { existing.classList.toggle('open'); if (existing.classList.contains('open')) existing.querySelector('textarea').focus(); return; }
+    var saved = lsGet(C_PREFIX + bid) || '';
+    var box = document.createElement('div');
+    box.className = 'ed-comment-box open';
+    box.innerHTML = '<textarea placeholder="Comment on this block..."></textarea><div class="ed-comment-box-actions"><button type="button" class="ed-cancel">Cancel</button><button type="button" class="ed-save">Save</button></div>';
+    el.appendChild(box);
+    var ta = box.querySelector('textarea'); ta.value = saved; ta.focus();
+    box.querySelector('.ed-cancel').addEventListener('click', function () { box.classList.remove('open'); });
+    box.querySelector('.ed-save').addEventListener('click', function () { saveBlockComment(el, bid, ta.value.trim()); box.classList.remove('open'); updateBarStatus(); });
+  }
+  function saveBlockComment(el, bid, txt) {
+    var dot = el.querySelector('.ed-dot'); var btn = el.querySelector('.ed-comment-btn');
+    if (txt) { lsSet(C_PREFIX + bid, txt); if (dot) dot.hidden = false; if (btn) btn.classList.add('has-comment'); el.classList.add('has-ed-comment'); }
+    else { lsRm(C_PREFIX + bid); if (dot) dot.hidden = true; if (btn) btn.classList.remove('has-comment'); el.classList.remove('has-ed-comment'); }
+    updateBarStatus();
+  }
+  function countAllComments() {
+    var n = 0;
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf(C_PREFIX) === 0 && (lsGet(k) || '').trim()) n++;
+    }
+    n += lsGetJSON(A_KEY).length;
+    lsGetJSON(S_KEY).forEach(function (s) { if (s.text && s.text.trim()) n++; });
+    return n;
+  }
+  function updateBarStatus() {
+    var n = countAllComments();
+    var c = document.getElementById('ed-bar-count'); if (c) c.textContent = n;
+    var s = document.getElementById('ed-bar-status'); if (s) s.textContent = n > 0 ? n + ' comment' + (n !== 1 ? 's' : '') + ' saved' : 'No comments yet';
+  }
+  function buildBar() {
+    var bar = document.createElement('div');
+    bar.className = 'ed-bar'; bar.id = 'ed-bar';
+    bar.innerHTML = '<span class="ed-bar-label">Editor</span><button class="ed-bar-btn ed-bar-primary" id="ed-bar-sticky">+ Note</button><span class="ed-bar-spacer"></span><span class="ed-bar-status" id="ed-bar-status">No comments yet</span><span class="ed-bar-sep"></span><span class="ed-bar-count" id="ed-bar-count">0</span>';
+    document.body.appendChild(bar);
+  }
+  function init() { initCommentableBlocks(); buildBar(); updateBarStatus(); }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(init, 500); }); }
+  else { setTimeout(init, 500); }
+})();
+</script>
+<style>
+/* ===== editor-widget.css (minimal print-hide) ===== */
+.ed-commentable { position: relative; }
+.ed-comment-btn { position: absolute; top: 3px; right: -30px; width: 22px; height: 22px; padding: 0; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; color: #64748b; cursor: pointer; font-size: 12px; opacity: 0; transition: opacity 0.15s; z-index: 10; }
+.ed-commentable:hover .ed-comment-btn { opacity: 0.75; }
+.ed-comment-btn:hover { opacity: 1 !important; }
+.ed-comment-btn.has-comment { opacity: 1; background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+.ed-dot { position: absolute; top: 1px; right: -12px; width: 7px; height: 7px; border-radius: 50%; background: #3b82f6; }
+.ed-dot[hidden] { display: none; }
+.ed-comment-box { margin: 6px 0 10px; padding: 10px 12px; background: #fafafa; border: 1px solid #e2e8f0; border-radius: 5px; display: none; }
+.ed-comment-box.open { display: block; }
+.ed-comment-box textarea { width: 100%; min-height: 64px; padding: 7px 9px; border: 1px solid #d1d5db; border-radius: 4px; font-family: 'Times New Roman', serif; font-size: 11pt; }
+.ed-comment-box-actions { margin-top: 6px; display: flex; gap: 6px; justify-content: flex-end; }
+.ed-comment-box-actions button { padding: 4px 12px; font-size: 11px; cursor: pointer; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; }
+.ed-comment-box-actions button.ed-save { background: #1565c0; color: #fff; border-color: #1565c0; }
+.ed-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; height: 38px; background: #1e2d3d; border-top: 1px solid #334155; display: flex; align-items: center; gap: 4px; padding: 0 12px; font-family: ui-sans-serif, system-ui, sans-serif; }
+.ed-bar-label { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-right: 6px; }
+.ed-bar-btn { height: 26px; padding: 0 10px; font-size: 11px; cursor: pointer; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; color: #e2e8f0; }
+.ed-bar-btn.ed-bar-primary { background: #1565c0; border-color: #1565c0; color: #fff; }
+.ed-bar-spacer { flex: 1; }
+.ed-bar-status { font-size: 10px; color: #64748b; }
+.ed-bar-count { background: #3b82f6; color: #fff; border-radius: 9px; font-size: 10px; font-weight: 700; min-width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; padding: 0 4px; }
+.ed-bar-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.12); margin: 0 4px; }
+body { padding-bottom: 46px; }
+@media print {
+  .ed-bar, .ed-comment-btn, .ed-comment-box, .ed-dot { display: none !important; }
+  body { padding-bottom: 0 !important; }
+  .ed-commentable.has-ed-comment { border-left: none !important; padding-left: 0 !important; background: transparent !important; }
+}
+</style>
+</body>
+</html>
