@@ -1,828 +1,800 @@
 <!DOCTYPE html>
+<!--
+  Circle Discovery Lab — Isaac Lee, 6th Grade Math
+  Newton School / Mr. Kenny — 2026-05-26
+  Discovery-based: student finds π = C/d through measurement.
+  No formula revealed until Slide 5 (confirmation only).
+-->
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isaac's Circle Discovery Lab</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <!-- polyfill.io removed (2024 supply-chain shutdown · blocked by all browsers · caused window.load stuck) -->
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at center, #1a1f3a 0%, #0d1123 100%);
-            color: #e0e6ff;
-            overflow: hidden;
-            position: relative;
-        }
-        .stars {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-        }
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-        #ui-container {
-            position: relative;
-            z-index: 10;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        #header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        #header h1 {
-            font-size: 2.5em;
-            color: #00d4ff;
-            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-            margin-bottom: 10px;
-        }
-        #stage-title {
-            font-size: 1.3em;
-            color: #9fa8da;
-            margin: 10px 0;
-        }
-        #canvas-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-        }
-        #controls {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            color: white;
-            padding: 15px 35px;
-            font-size: 1.1em;
-            font-weight: 600;
-            border-radius: 30px;
-            cursor: pointer;
-            margin: 0 10px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        #message-box {
-            background: rgba(30, 36, 63, 0.8);
-            border: 2px solid #667eea;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px auto;
-            max-width: 800px;
-            font-size: 1.2em;
-            line-height: 1.6;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        .vocab-highlight {
-            color: #00d4ff;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-        }
-        #vocab-box {
-            position: fixed;
-            right: 20px;
-            top: 100px;
-            background: rgba(20, 25, 45, 0.9);
-            border: 2px solid #764ba2;
-            border-radius: 10px;
-            padding: 20px;
-            width: 300px;
-            max-height: 500px;
-            overflow-y: auto;
-            opacity: 0;
-            transform: translateX(350px);
-        }
-        #vocab-box.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .vocab-item {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
-        }
-        .vocab-item:last-child {
-            border-bottom: none;
-        }
-        .vocab-term {
-            color: #00d4ff;
-            font-weight: 700;
-            font-size: 1em;
-            margin-bottom: 5px;
-        }
-        .vocab-def {
-            color: #c5cae9;
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-        #mute-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(30, 36, 63, 0.8);
-            border: 2px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            font-size: 1.5em;
-            z-index: 100;
-        }
-        #hint-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            font-size: 0.9em;
-            padding: 10px 20px;
-        }
-        #stage4-table {
-            margin: 20px auto;
-            border-collapse: collapse;
-            background: rgba(20, 25, 45, 0.8);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        #stage4-table th,
-        #stage4-table td {
-            padding: 15px 25px;
-            text-align: center;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
-        }
-        #stage4-table th {
-            background: rgba(102, 126, 234, 0.3);
-            color: #00d4ff;
-            font-weight: 700;
-        }
-        #stage4-table td {
-            color: #e0e6ff;
-            font-size: 1.1em;
-        }
-        #celebration {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 5em;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 1000;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
-        }
-        .slider-container {
-            margin: 20px auto;
-            max-width: 400px;
-        }
-        .slider-container label {
-            display: block;
-            margin-bottom: 10px;
-            color: #9fa8da;
-        }
-        .slider-container input[type="range"] {
-            width: 100%;
-            height: 8px;
-            background: rgba(102, 126, 234, 0.3);
-            outline: none;
-            border-radius: 5px;
-        }
-        .slider-container input[type="range"]::-webkit-slider-thumb {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #00d4ff;
-            cursor: pointer;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle Discovery Lab · Isaac Lee</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0d9488;
+    --teal-soft: #ccfbf1;
+    --teal-deep: #134e4a;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --paper: #ffffff;
+    --bg: #f8fffe;
+    --line: #e8e8e8;
+    --amber: #d97706;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans); background: var(--bg); color: var(--ink);
+    line-height: 1.55; overflow: hidden;
+  }
+
+  .app {
+    display: flex; flex-direction: column;
+    height: 100vh; max-width: 900px; margin: 0 auto;
+    background: var(--paper); position: relative;
+  }
+
+  .topbar {
+    flex-shrink: 0; padding: 10px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .topbar .brand {
+    font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--teal); font-weight: 600;
+  }
+  .topbar .dots { display: flex; gap: 6px; }
+  .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--line); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dot.active { background: var(--teal); transform: scale(1.3); }
+  .dot.done { background: var(--teal-soft); }
+
+  .stage {
+    flex: 1; overflow-y: auto;
+    padding: 20px 24px 12px;
+  }
+  .slide { display: none; animation: fade 0.3s ease; }
+  .slide.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .slide h2 {
+    font-family: var(--serif); font-size: 26px; font-weight: 700;
+    margin-bottom: 4px; line-height: 1.2;
+  }
+  .slide .eyebrow {
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--teal); font-weight: 600; margin-bottom: 8px;
+  }
+  .slide p { font-size: 14px; color: var(--ink-soft); margin-bottom: 12px; }
+  .slide p strong { color: var(--ink); }
+  .slide p em { color: var(--teal-deep); font-style: normal; font-weight: 600; }
+
+  .canvas-wrap {
+    background: var(--bg); border-radius: 10px;
+    padding: 12px; margin: 12px 0;
+    border: 1px solid var(--line);
+    display: flex; justify-content: center; align-items: center;
+  }
+  canvas { display: block; max-width: 100%; height: auto; touch-action: none; }
+
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    background: var(--paper); padding: 10px 14px;
+    border: 1px solid var(--line); border-radius: 8px;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+  .controls label { display: flex; align-items: center; gap: 8px; }
+  .controls input[type=range] { width: 160px; accent-color: var(--teal); }
+  .controls button {
+    background: var(--teal); color: white; border: none;
+    padding: 7px 14px; border-radius: 6px; cursor: pointer;
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    transition: background 0.15s;
+  }
+  .controls button:hover { background: var(--teal-deep); }
+  .controls button.secondary { background: var(--paper); color: var(--teal-deep); border: 1px solid var(--teal); }
+  .controls button.secondary:hover { background: var(--teal-soft); }
+  .controls .readout {
+    font-family: 'Inter', monospace; font-variant-numeric: tabular-nums;
+    background: var(--teal-soft); color: var(--teal-deep);
+    padding: 4px 10px; border-radius: 6px; font-weight: 600;
+  }
+
+  .meas-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+    margin-top: 8px;
+  }
+  .meas-table th, .meas-table td {
+    padding: 6px 10px; text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .meas-table th {
+    background: var(--bg); color: var(--teal-deep);
+    font-weight: 600; font-size: 11px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .meas-table td.ratio-cell { font-weight: 600; color: var(--ink); }
+  .meas-table .empty-row td {
+    color: var(--ink-soft); font-style: italic; padding: 14px;
+  }
+
+  .nudge {
+    background: #fff8e6; border-left: 3px solid var(--amber);
+    padding: 10px 14px; border-radius: 6px; margin: 10px 0;
+    font-size: 13px; color: #7a4d00;
+  }
+  .nudge.hidden { display: none; }
+
+  .reveal-box {
+    background: linear-gradient(135deg, var(--teal-soft), #e6fffb);
+    border: 2px solid var(--teal); border-radius: 10px;
+    padding: 18px 20px; margin: 14px 0;
+    font-size: 14px;
+  }
+  .reveal-box.hidden { display: none; }
+  .reveal-box .big-pi {
+    font-family: var(--serif); font-size: 48px;
+    color: var(--teal-deep); text-align: center;
+    margin: 4px 0 8px;
+  }
+  .reveal-box p { color: var(--teal-deep); margin-bottom: 8px; }
+  .reveal-box p:last-child { margin-bottom: 0; }
+
+  .input-row {
+    display: flex; gap: 10px; align-items: center;
+    margin: 10px 0;
+  }
+  .input-row label { font-size: 13px; color: var(--ink); }
+  .input-row input[type=number] {
+    width: 100px; padding: 6px 10px;
+    border: 1px solid var(--line); border-radius: 6px;
+    font-family: var(--sans); font-size: 14px;
+    text-align: center;
+  }
+  .input-row input[type=number]:focus {
+    outline: none; border-color: var(--teal);
+  }
+
+  .navbar {
+    flex-shrink: 0; padding: 10px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--line); background: var(--paper);
+  }
+  .nav-btn {
+    background: var(--teal); color: white; border: none;
+    padding: 8px 18px; border-radius: 6px; cursor: pointer;
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { background: var(--teal-deep); }
+  .nav-btn:disabled {
+    background: var(--line); color: var(--ink-soft); cursor: not-allowed;
+  }
+  .nav-btn.ghost { background: transparent; color: var(--teal-deep); }
+  .nav-btn.ghost:hover { background: var(--teal-soft); }
+  .nav-progress { font-size: 12px; color: var(--ink-soft); }
+
+  @media (max-width: 520px) {
+    .stage { padding: 14px 16px 8px; }
+    .slide h2 { font-size: 22px; }
+    .controls input[type=range] { width: 120px; }
+  }
+</style>
 </head>
 <body>
-    <div class="stars" id="starfield"></div>
-
-    <button id="mute-btn" onclick="toggleMute()">🔊</button>
-
-    <div id="ui-container">
-        <div id="header">
-            <h1>Circle Discovery Lab</h1>
-            <div id="stage-title">Loading...</div>
-        </div>
-
-        <div id="canvas-container"></div>
-
-        <div id="message-box"></div>
-
-        <div id="controls">
-            <button class="btn" id="next-btn" onclick="nextStage()">Next</button>
-            <button class="btn" id="hint-btn" onclick="showHint()" style="display: none;">Hint</button>
-        </div>
-    </div>
-
-    <div id="vocab-box"></div>
-    <div id="celebration"></div>
-
-    <script>
-        // Audio synthesis
-        let audioCtx = null;
-        let isMuted = false;
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        function toggleMute() {
-            isMuted = !isMuted;
-            document.getElementById('mute-btn').textContent = isMuted ? '🔇' : '🔊';
-        }
-
-        function playSound(freq, duration = 0.1, type = 'sine') {
-            if (isMuted || !audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.frequency.value = freq;
-            osc.type = type;
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + duration);
-        }
-
-        function playChime() {
-            playSound(523.25, 0.2);
-            setTimeout(() => playSound(659.25, 0.2), 100);
-        }
-
-        function playPop() {
-            playSound(800, 0.05, 'square');
-        }
-
-        function playFanfare() {
-            const notes = [523.25, 659.25, 783.99, 1046.50];
-            notes.forEach((note, i) => {
-                setTimeout(() => playSound(note, 0.3), i * 150);
-            });
-        }
-
-        // Starfield
-        function createStarfield() {
-            const starfield = document.getElementById('starfield');
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 3 + 's';
-                starfield.appendChild(star);
-            }
-        }
-
-        // Vocabulary
-        const vocabulary = [
-            { term: 'POINT', def: 'A single spot — no size, just a location.' },
-            { term: 'EQUIDISTANCE', def: '"Same distance" — every point on a circle is equidistant from center.' },
-            { term: 'CENTER', def: 'The middle of the circle.' },
-            { term: 'RADIUS', def: 'Distance from center to edge. ("r")' },
-            { term: 'CHORD', def: 'A line connecting any two points on the circle.' },
-            { term: 'DIAMETER', def: 'The LONGEST chord — passes through center. (= 2 × radius)' }
-        ];
-
-        function showVocab() {
-            const vocabBox = document.getElementById('vocab-box');
-            let html = '<h3 style="color: #00d4ff; margin-bottom: 15px;">Circle Vocabulary</h3>';
-            vocabulary.forEach(v => {
-                html += `<div class="vocab-item">
-                    <div class="vocab-term">${v.term}</div>
-                    <div class="vocab-def">${v.def}</div>
-                </div>`;
-            });
-            vocabBox.innerHTML = html;
-            vocabBox.classList.add('visible');
-        }
-
-        // Stage management
-        let currentStage = 0;
-        const stages = [
-            { title: 'Stage 0: Opening', init: initStage0 },
-            { title: 'Stage 1: What IS a Circle?', init: initStage1 },
-            { title: 'Stage 2: Pencil + String Compass', init: initStage2 },
-            { title: 'Stage 3: Chord vs Diameter Hunt', init: initStage3 },
-            { title: 'Stage 4: The Magic Number 3', init: initStage4 },
-            { title: 'Stage 5: Think About It', init: initStage5 }
-        ];
-
-        function updateStageTitle() {
-            document.getElementById('stage-title').textContent = stages[currentStage].title;
-        }
-
-        function setMessage(html) {
-            document.getElementById('message-box').innerHTML = html;
-            MathJax.typesetPromise();
-        }
-
-        function celebrate(emoji) {
-            const cel = document.getElementById('celebration');
-            cel.textContent = emoji;
-            gsap.fromTo(cel,
-                { opacity: 0, scale: 0.5 },
-                { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out' }
-            );
-            setTimeout(() => {
-                gsap.to(cel, { opacity: 0, duration: 0.5 });
-            }, 1500);
-            playFanfare();
-        }
-
-        function nextStage() {
-            if (currentStage < stages.length - 1) {
-                currentStage++;
-                updateStageTitle();
-                stages[currentStage].init();
-                playChime();
-            }
-        }
-
-        function showHint() {
-            playPop();
-            // Stage-specific hints will be implemented per stage
-        }
-
-        // p5.js sketch
-        let sketch = function(p) {
-            let centerX, centerY;
-            let points = [];
-            let stage1Radius = 150;
-            let stage2Radius = 100;
-            let stage2CenterX, stage2CenterY;
-            let stage2Drawing = false;
-            let stage2Path = [];
-            let stage3Points = [];
-            let stage3Chords = [];
-            let stage3Radius = 180;
-            let stage4Circles = [];
-            let stage4CurrentCircle = null;
-            let stage4MeasuringC = false;
-            let stage4MeasurePath = [];
-
-            p.setup = function() {
-                let canvas = p.createCanvas(900, 600);
-                canvas.parent('canvas-container');
-                centerX = p.width / 2;
-                centerY = p.height / 2;
-                stage2CenterX = centerX;
-                stage2CenterY = centerY;
-            };
-
-            p.draw = function() {
-                p.background(26, 31, 58, 200);
-
-                if (currentStage === 1) {
-                    drawStage1();
-                } else if (currentStage === 2) {
-                    drawStage2();
-                } else if (currentStage === 3) {
-                    drawStage3();
-                } else if (currentStage === 4) {
-                    drawStage4();
-                }
-            };
-
-            // Stage 1: Point clicking
-            function drawStage1() {
-                // Center point
-                p.fill(0, 212, 255);
-                p.noStroke();
-                p.circle(centerX, centerY, 15);
-                p.fill(224, 230, 255);
-                p.textAlign(p.CENTER);
-                p.textSize(14);
-                p.text('CENTER', centerX, centerY - 25);
-
-                // Radius guide circle (faint)
-                p.noFill();
-                p.stroke(102, 126, 234, 50);
-                p.strokeWeight(1);
-                p.circle(centerX, centerY, stage1Radius * 2);
-
-                // User points
-                points.forEach((pt, i) => {
-                    p.fill(159, 168, 218);
-                    p.circle(pt.x, pt.y, 8);
-
-                    // Line from center
-                    p.stroke(102, 126, 234, 100);
-                    p.strokeWeight(1);
-                    p.line(centerX, centerY, pt.x, pt.y);
-
-                    // Distance label
-                    let dist = p.dist(centerX, centerY, pt.x, pt.y);
-                    let midX = (centerX + pt.x) / 2;
-                    let midY = (centerY + pt.y) / 2;
-                    p.noStroke();
-                    p.fill(159, 168, 218);
-                    p.textSize(12);
-                    p.text(dist.toFixed(0), midX, midY);
-                });
-
-                // Emerging circle
-                if (points.length >= 5) {
-                    p.noFill();
-                    p.stroke(0, 212, 255, 150);
-                    p.strokeWeight(3);
-                    p.circle(centerX, centerY, stage1Radius * 2);
-                }
-            }
-
-            p.mousePressed = function() {
-                if (currentStage === 1 && points.length < 12) {
-                    let dist = p.dist(p.mouseX, p.mouseY, centerX, centerY);
-                    if (p.abs(dist - stage1Radius) < 30) {
-                        let angle = p.atan2(p.mouseY - centerY, p.mouseX - centerX);
-                        let x = centerX + stage1Radius * p.cos(angle);
-                        let y = centerY + stage1Radius * p.sin(angle);
-                        points.push({ x, y });
-                        playPop();
-
-                        if (points.length === 8) {
-                            celebrate('⭕');
-                            setMessage('You created a <span class="vocab-highlight">CIRCLE</span>! Every point is <span class="vocab-highlight">EQUIDISTANT</span> from the <span class="vocab-highlight">CENTER</span>.');
-                        }
-                    }
-                } else if (currentStage === 3 && stage3Points.length < 2) {
-                    let dist = p.dist(p.mouseX, p.mouseY, centerX, centerY);
-                    if (p.abs(dist - stage3Radius) < 20) {
-                        let angle = p.atan2(p.mouseY - centerY, p.mouseX - centerX);
-                        let x = centerX + stage3Radius * p.cos(angle);
-                        let y = centerY + stage3Radius * p.sin(angle);
-                        stage3Points.push({ x, y });
-                        playPop();
-
-                        if (stage3Points.length === 2) {
-                            addChord();
-                        }
-                    }
-                } else if (currentStage === 4 && stage4CurrentCircle) {
-                    stage4MeasuringC = true;
-                    stage4MeasurePath = [];
-                }
-            };
-
-            p.mouseReleased = function() {
-                if (currentStage === 2) {
-                    stage2Drawing = false;
-                }
-                if (currentStage === 4 && stage4MeasuringC) {
-                    stage4MeasuringC = false;
-                    finishCircumferenceMeasure();
-                }
-            };
-
-            // Stage 2: Compass
-            function drawStage2() {
-                // Pin
-                p.fill(255, 100, 100);
-                p.noStroke();
-                p.circle(stage2CenterX, stage2CenterY, 12);
-
-                // String
-                if (p.mouseIsPressed && p.dist(p.mouseX, p.mouseY, stage2CenterX, stage2CenterY) > 10) {
-                    stage2Drawing = true;
-                    let angle = p.atan2(p.mouseY - stage2CenterY, p.mouseX - stage2CenterX);
-                    let x = stage2CenterX + stage2Radius * p.cos(angle);
-                    let y = stage2CenterY + stage2Radius * p.sin(angle);
-                    stage2Path.push({ x, y });
-
-                    p.stroke(255, 200, 100);
-                    p.strokeWeight(2);
-                    p.line(stage2CenterX, stage2CenterY, x, y);
-
-                    // Pencil
-                    p.fill(100, 200, 255);
-                    p.circle(x, y, 8);
-                }
-
-                // Path
-                p.noFill();
-                p.stroke(0, 212, 255);
-                p.strokeWeight(3);
-                p.beginShape();
-                stage2Path.forEach(pt => p.vertex(pt.x, pt.y));
-                p.endShape();
-
-                // Radius label
-                p.noStroke();
-                p.fill(159, 168, 218);
-                p.textAlign(p.CENTER);
-                p.textSize(14);
-                p.text(`Radius: ${stage2Radius}`, stage2CenterX, stage2CenterY + stage2Radius + 30);
-            }
-
-            // Stage 3: Chord hunt
-            function drawStage3() {
-                // Circle
-                p.noFill();
-                p.stroke(102, 126, 234, 100);
-                p.strokeWeight(2);
-                p.circle(centerX, centerY, stage3Radius * 2);
-
-                // Center
-                p.fill(0, 212, 255);
-                p.noStroke();
-                p.circle(centerX, centerY, 8);
-
-                // Selected points
-                stage3Points.forEach(pt => {
-                    p.fill(255, 200, 100);
-                    p.circle(pt.x, pt.y, 10);
-                });
-
-                // Chords
-                stage3Chords.forEach(chord => {
-                    p.stroke(chord.isDiameter ? 255 : 159, chord.isDiameter ? 100 : 168, chord.isDiameter ? 255 : 218);
-                    p.strokeWeight(chord.isDiameter ? 4 : 2);
-                    p.line(chord.p1.x, chord.p1.y, chord.p2.x, chord.p2.y);
-
-                    // Length label
-                    let midX = (chord.p1.x + chord.p2.x) / 2;
-                    let midY = (chord.p1.y + chord.p2.y) / 2;
-                    p.noStroke();
-                    p.fill(224, 230, 255);
-                    p.textAlign(p.CENTER);
-                    p.textSize(14);
-                    p.text(chord.length.toFixed(1), midX, midY - 10);
-                });
-            }
-
-            function addChord() {
-                let p1 = stage3Points[0];
-                let p2 = stage3Points[1];
-                let length = p.dist(p1.x, p1.y, p2.x, p2.y);
-
-                // Check if passes through center
-                let midX = (p1.x + p2.x) / 2;
-                let midY = (p1.y + p2.y) / 2;
-                let distToCenter = p.dist(midX, midY, centerX, centerY);
-                let isDiameter = distToCenter < 10;
-
-                stage3Chords.push({ p1, p2, length, isDiameter });
-                stage3Points = [];
-
-                if (isDiameter) {
-                    celebrate('🎯');
-                    playFanfare();
-                    setMessage('<span class="vocab-highlight">DIAMETER</span> found! The longest <span class="vocab-highlight">CHORD</span> passes through the <span class="vocab-highlight">CENTER</span>. Diameter = 2 × Radius = ' + (stage3Radius * 2).toFixed(1));
-                    setTimeout(() => {
-                        document.getElementById('next-btn').disabled = false;
-                    }, 2000);
-                } else {
-                    playPop();
-                    setMessage('That\'s a <span class="vocab-highlight">CHORD</span>! Try to find the LONGEST one. Hint: it passes through the center.');
-                }
-            }
-
-            // Stage 4: Pi discovery
-            function drawStage4() {
-                stage4Circles.forEach(circle => {
-                    // Circle
-                    p.noFill();
-                    p.stroke(102, 126, 234, circle === stage4CurrentCircle ? 200 : 100);
-                    p.strokeWeight(circle === stage4CurrentCircle ? 3 : 2);
-                    p.circle(circle.x, circle.y, circle.r * 2);
-
-                    // Label
-                    p.noStroke();
-                    p.fill(159, 168, 218);
-                    p.textAlign(p.CENTER);
-                    p.textSize(12);
-                    p.text(circle.name, circle.x, circle.y - circle.r - 15);
-
-                    // Diameter line
-                    if (circle.C !== null) {
-                        p.stroke(255, 200, 100);
-                        p.strokeWeight(2);
-                        p.line(circle.x - circle.r, circle.y, circle.x + circle.r, circle.y);
-                        p.noStroke();
-                        p.fill(255, 200, 100);
-                        p.text(`d = ${circle.d.toFixed(1)}`, circle.x, circle.y + 15);
-                    }
-                });
-
-                // Measuring path
-                if (stage4MeasuringC && stage4MeasurePath.length > 0) {
-                    p.noFill();
-                    p.stroke(0, 212, 255);
-                    p.strokeWeight(3);
-                    p.beginShape();
-                    stage4MeasurePath.forEach(pt => p.vertex(pt.x, pt.y));
-                    p.endShape();
-                }
-            }
-
-            p.mouseDragged = function() {
-                if (currentStage === 4 && stage4MeasuringC && stage4CurrentCircle) {
-                    stage4MeasurePath.push({ x: p.mouseX, y: p.mouseY });
-                }
-            };
-
-            function finishCircumferenceMeasure() {
-                if (!stage4CurrentCircle || stage4MeasurePath.length < 10) return;
-
-                let totalDist = 0;
-                for (let i = 1; i < stage4MeasurePath.length; i++) {
-                    totalDist += p.dist(
-                        stage4MeasurePath[i-1].x, stage4MeasurePath[i-1].y,
-                        stage4MeasurePath[i].x, stage4MeasurePath[i].y
-                    );
-                }
-
-                stage4CurrentCircle.C = totalDist;
-                stage4CurrentCircle.ratio = totalDist / stage4CurrentCircle.d;
-                updateStage4Table();
-
-                // Move to next circle
-                let idx = stage4Circles.indexOf(stage4CurrentCircle);
-                if (idx < stage4Circles.length - 1) {
-                    stage4CurrentCircle = stage4Circles[idx + 1];
-                    setMessage(`Great! Now measure the <span class="vocab-highlight">CIRCUMFERENCE</span> of the <strong>${stage4CurrentCircle.name}</strong> circle. Click and drag around the edge.`);
-                } else {
-                    // All done
-                    celebrate('🎉');
-                    setMessage('Look at the table! <strong>C ÷ d</strong> is always the SAME number: <strong>π = 3.14159...</strong> No matter the size! This is the <span class="vocab-highlight">MAGIC NUMBER</span> of circles!');
-                    document.getElementById('next-btn').disabled = false;
-                }
-
-                stage4MeasurePath = [];
-                playChime();
-            }
-
-            function updateStage4Table() {
-                stage4Circles.forEach((circle, i) => {
-                    if (circle.C !== null) {
-                        document.getElementById(`c${i}`).textContent = circle.C.toFixed(1);
-                        document.getElementById(`d${i}`).textContent = circle.d.toFixed(1);
-                        document.getElementById(`ratio${i}`).textContent = circle.ratio.toFixed(3);
-                    }
-                });
-            }
-
-            // Expose p5 to global for stage functions
-            window.p5sketch = p;
-        };
-
-        // Stage initializers
-        function initStage0() {
-            setMessage('<h2 style="color: #00d4ff; font-size: 2em;">Hi Isaac! 👋</h2><p style="font-size: 1.3em; margin-top: 20px;">Today, you discover circles.</p><p style="margin-top: 15px; color: #9fa8da;">Get ready for an adventure in the Circle Discovery Lab!</p>');
-            document.getElementById('next-btn').disabled = false;
-            setTimeout(() => {
-                gsap.to('#message-box', { scale: 1.05, duration: 0.5, yoyo: true, repeat: 1, ease: 'sine.inOut' });
-            }, 500);
-        }
-
-        function initStage1() {
-            points = [];
-            setMessage('Click anywhere on the faint circle outline to place points. Try to place them all at the <span class="vocab-highlight">SAME DISTANCE</span> from the <span class="vocab-highlight">CENTER</span>. What shape emerges?');
-            document.getElementById('next-btn').disabled = false;
-        }
-
-        function initStage2() {
-            setMessage('Drag your mouse around the pin to draw a circle! The string length is the <span class="vocab-highlight">RADIUS</span>. You just BECAME a compass! 🧭');
-            document.getElementById('next-btn').disabled = false;
-
-            // Add slider
-            const controls = document.getElementById('controls');
-            const sliderHTML = `
-                <div class="slider-container">
-                    <label>String Length (Radius): <span id="radius-val">100</span></label>
-                    <input type="range" min="50" max="250" value="100" id="radius-slider" oninput="updateRadius(this.value)">
-                </div>
-            `;
-            controls.insertAdjacentHTML('beforebegin', sliderHTML);
-        }
-
-        function updateRadius(val) {
-            window.p5sketch.stage2Radius = parseInt(val);
-            document.getElementById('radius-val').textContent = val;
-            window.p5sketch.stage2Path = [];
-        }
-
-        function initStage3() {
-            stage3Points = [];
-            stage3Chords = [];
-            setMessage('Click TWO points on the circle to draw a <span class="vocab-highlight">CHORD</span>. Challenge: Find the LONGEST chord! (Hint: it passes through the center.)');
-            document.getElementById('next-btn').disabled = true;
-        }
-
-        function initStage4() {
-            // Create circles
-            stage4Circles = [
-                { name: 'Small', x: 150, y: 150, r: 50, d: 100, C: null, ratio: null },
-                { name: 'Medium', x: 450, y: 150, r: 80, d: 160, C: null, ratio: null },
-                { name: 'Large', x: 250, y: 400, r: 120, d: 240, C: null, ratio: null },
-                { name: 'Huge', x: 650, y: 400, r: 150, d: 300, C: null, ratio: null }
-            ];
-            stage4CurrentCircle = stage4Circles[0];
-
-            setMessage(`Click and drag your "measuring tape" around the edge of the <strong>${stage4CurrentCircle.name}</strong> circle to measure its <span class="vocab-highlight">CIRCUMFERENCE</span> (C).`);
-            document.getElementById('next-btn').disabled = true;
-
-            // Create table
-            const tableHTML = `
-                <table id="stage4-table">
-                    <thead>
-                        <tr>
-                            <th>Circle</th>
-                            <th>Circumference (C)</th>
-                            <th>Diameter (d)</th>
-                            <th>C ÷ d</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${stage4Circles.map((c, i) => `
-                            <tr>
-                                <td>${c.name}</td>
-                                <td id="c${i}">—</td>
-                                <td id="d${i}">—</td>
-                                <td id="ratio${i}">—</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-            document.getElementById('message-box').insertAdjacentHTML('afterend', tableHTML);
-        }
-
-        function initStage5() {
-            showVocab();
-            setMessage(`
-                <h2 style="color: #00d4ff; font-size: 1.8em; margin-bottom: 20px;">🤔 Isaac, here's the question to think about until next class:</h2>
-                <p style="font-size: 1.3em; line-height: 1.8; margin-bottom: 25px;">
-                    <strong style="color: #00d4ff;">WHY</strong> does <strong>C ÷ d</strong> always give us <strong>π</strong> — no matter how big or small the circle is?
-                </p>
-                <p style="font-size: 1.1em; color: #9fa8da; margin-bottom: 25px;">
-                    Try to explain it to yourself.
-                </p>
-                <p style="font-size: 0.95em; color: #c5cae9; font-style: italic;">
-                    (Hint: think about what makes a circle a circle.)
-                </p>
-                <p style="font-size: 1.2em; margin-top: 30px; color: #00d4ff;">
-                    Bring your idea to Mr. Kenny next Tuesday!
-                </p>
-                <p style="font-size: 1.5em; margin-top: 25px;">
-                    See you next week, Isaac! 🌟
-                </p>
-            `);
-            document.getElementById('next-btn').style.display = 'none';
-
-            gsap.to('#message-box', {
-                scale: 1.02,
-                duration: 2,
-                yoyo: true,
-                repeat: -1,
-                ease: 'sine.inOut'
-            });
-        }
-
-        // Initialize
-        window.addEventListener('load', () => {
-            initAudio();
-            createStarfield();
-            new p5(sketch);
-            updateStageTitle();
-            stages[currentStage].init();
-        });
-    </script>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">Circle Discovery Lab</div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="stage">
+
+    <!-- ===================== SLIDE 1 ===================== -->
+    <section class="slide active" data-slide="1">
+      <div class="eyebrow">Slide 1 of 5</div>
+      <h2>What is a circle?</h2>
+      <p>See that <strong>&#x1F7E2; special point</strong> in the middle of the box? Click anywhere on the paper. Some clicks will <em>stick</em>. Some won't. Watch carefully &mdash; what makes a click stick?</p>
+
+      <div class="canvas-wrap">
+        <canvas id="c1" width="560" height="340"></canvas>
+      </div>
+
+      <div class="controls">
+        <label>Sticking distance
+          <input type="range" id="s1-radius" min="40" max="150" value="90">
+        </label>
+        <button class="secondary" id="s1-clear">Clear clicks</button>
+        <span class="readout" id="s1-count">0 sticky &middot; 0 missed</span>
+      </div>
+
+      <p style="margin-top:10px;">A circle is just <strong>every point that is the same distance from one special point</strong>. That distance has a name &mdash; we'll call it the <em>radius</em>. And that special point &mdash; since the whole shape depends on it &mdash; gets its own name too: the <em>center</em>.</p>
+    </section>
+
+    <!-- ===================== SLIDE 2 ===================== -->
+    <section class="slide" data-slide="2">
+      <div class="eyebrow">Slide 2 of 5</div>
+      <h2>Important parts of a circle</h2>
+      <p>Click <strong>two points on the edge</strong> of the circle. Watch what the line gets called.</p>
+
+      <div class="canvas-wrap">
+        <canvas id="c2" width="560" height="360"></canvas>
+      </div>
+
+      <div class="controls">
+        <button class="secondary" id="s2-clear">Clear</button>
+        <button class="secondary" id="s2-arc-toggle">Show arc between points</button>
+        <span class="readout" id="s2-label">&mdash; pick 2 points &mdash;</span>
+      </div>
+
+      <p>A line across the circle = <em>chord</em>. If that chord <strong>passes through the center</strong>, it earns a new name: <em>diameter</em>. The curved piece of edge between two points = <em>arc</em>.</p>
+    </section>
+
+    <!-- ===================== SLIDE 3 ===================== -->
+    <section class="slide" data-slide="3">
+      <div class="eyebrow">Slide 3 of 5</div>
+      <h2>The big question</h2>
+      <p>People noticed something strange about circles thousands of years ago. Walk all the way around the outside of any circle &mdash; that distance has a name: <em>circumference</em>. Then measure straight across &mdash; the diameter.</p>
+
+      <p><strong>Is there any pattern between those two numbers?</strong></p>
+
+      <p>Bigger circle &rarr; bigger circumference, bigger diameter. That part is obvious. But what about the <em>relationship</em> between them? On the next slide, you'll measure both for any circle you want, and divide. We won't tell you the answer. You find it.</p>
+
+      <div class="canvas-wrap">
+        <canvas id="c3" width="560" height="260"></canvas>
+      </div>
+
+      <div class="controls">
+        <span style="color:var(--ink-soft); font-size:13px;">Tap "Next &rarr;" when you're ready to measure.</span>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 4 ===================== -->
+    <section class="slide" data-slide="4">
+      <div class="eyebrow">Slide 4 of 5</div>
+      <h2>The Measurement Lab</h2>
+      <p>Drag the slider to change the circle's size. Press <strong>"Unroll the edge"</strong> to see the circumference stretched out straight on the ruler. Read the two numbers, then <strong>divide circumference by diameter yourself</strong> and type your answer.</p>
+
+      <div class="canvas-wrap">
+        <canvas id="c4" width="620" height="380"></canvas>
+      </div>
+
+      <div class="controls">
+        <label>Circle size
+          <input type="range" id="s4-size" min="60" max="280" value="140">
+        </label>
+        <button id="s4-unroll">Unroll the edge</button>
+        <button class="secondary" id="s4-reset">Reset</button>
+      </div>
+
+      <div class="controls">
+        <span style="font-size:13px;">Diameter: <span class="readout" id="s4-d">&mdash;</span></span>
+        <span style="font-size:13px;">Circumference: <span class="readout" id="s4-c">&mdash;</span></span>
+        <label style="margin-left:auto;">Your answer for C &divide; d:
+          <input type="number" id="s4-ratio" step="0.01" placeholder="?" style="width:80px; padding:4px 8px; border:1px solid var(--line); border-radius:6px; font-size:13px;">
+        </label>
+        <button class="secondary" id="s4-record">Record this row</button>
+      </div>
+
+      <table class="meas-table">
+        <thead>
+          <tr><th>#</th><th>Diameter</th><th>Circumference</th><th>C &divide; d <span style="font-weight:400;">(your answer)</span></th></tr>
+        </thead>
+        <tbody id="s4-tbody">
+          <tr class="empty-row"><td colspan="4">No measurements yet &mdash; unroll a circle and try it.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="nudge hidden" id="s4-nudge">
+        Notice anything? Look down the last column.
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 5 ===================== -->
+    <section class="slide" data-slide="5">
+      <div class="eyebrow">Slide 5 of 5</div>
+      <h2>What did you find?</h2>
+      <p>Look at your table from the last slide. The C &divide; d column &mdash; what number did you keep getting?</p>
+
+      <div class="input-row">
+        <label for="s5-guess">My answer:</label>
+        <input type="number" id="s5-guess" step="0.01" placeholder="3.??">
+        <button class="nav-btn" id="s5-check">Check</button>
+      </div>
+
+      <div class="nudge hidden" id="s5-retry">
+        Hmm &mdash; try measuring 2 or 3 more circles on the previous slide and look again. The number is very consistent. Use the &larr; button below.
+      </div>
+
+      <div class="reveal-box hidden" id="s5-reveal">
+        <div class="big-pi">&pi;</div>
+        <p><strong>Yes! That's it.</strong> Humans found this number about 4000 years ago and named it <em>pi</em> (written <strong>&pi;</strong>, the Greek letter "p"). It's about <strong>3.14</strong> &mdash; or close to <strong>22/7</strong> if you want a fraction.</p>
+        <p>Every circle in the universe &mdash; tiny, huge, anywhere &mdash; gives the same ratio when you divide its circumference by its diameter. Pretty wild, right?</p>
+        <p style="font-style:italic; margin-top:10px;">You didn't memorize this. You <strong>found</strong> it. That's what math actually is. Bring this back to class. &mdash; Mr. K</p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="navbar">
+    <button class="nav-btn ghost" id="prev">&larr; Back</button>
+    <span class="nav-progress" id="progress">Slide 1 of 5</span>
+    <button class="nav-btn" id="next">Next &rarr;</button>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   Slide navigation
+============================================================ */
+const TOTAL = 5;
+let current = 1;
+const slides = document.querySelectorAll('.slide');
+const dotsBox = document.getElementById('dots');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const progress = document.getElementById('progress');
+
+for (let i = 1; i <= TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 1 ? ' active' : '');
+  d.dataset.target = i;
+  d.addEventListener('click', () => go(i));
+  dotsBox.appendChild(d);
+}
+
+function go(n) {
+  if (n < 1 || n > TOTAL) return;
+  current = n;
+  slides.forEach(s => s.classList.toggle('active', +s.dataset.slide === n));
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i + 1 === n);
+    d.classList.toggle('done', i + 1 < n);
+  });
+  progress.textContent = 'Slide ' + n + ' of ' + TOTAL;
+  prevBtn.disabled = n === 1;
+  nextBtn.disabled = n === TOTAL;
+  nextBtn.textContent = n === TOTAL - 1 ? 'Final →' : 'Next →';
+}
+
+prevBtn.addEventListener('click', () => go(current - 1));
+nextBtn.addEventListener('click', () => go(current + 1));
+window.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowLeft') go(current - 1);
+  if (e.key === 'ArrowRight') go(current + 1);
+});
+go(1);
+
+/* ============================================================
+   SLIDE 1 — equidistance discovery
+============================================================ */
+(function () {
+  const cv = document.getElementById('c1');
+  const ctx = cv.getContext('2d');
+  const slider = document.getElementById('s1-radius');
+  const clearBtn = document.getElementById('s1-clear');
+  const count = document.getElementById('s1-count');
+  const cx = cv.width / 2, cy = cv.height / 2;
+  let R = +slider.value;
+  const TOL = 10; // pixels tolerance
+  const points = []; // {x, y, sticky}
+
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = '#fcfdfd';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    // special point
+    ctx.fillStyle = '#0d9488';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '11px Inter';
+    ctx.fillStyle = '#134e4a';
+    ctx.fillText('special point', cx + 10, cy - 8);
+
+    // user points
+    points.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+      if (p.sticky) { ctx.fillStyle = '#0d9488'; ctx.fill(); }
+      else { ctx.fillStyle = '#d97706'; ctx.globalAlpha = 0.35; ctx.fill(); ctx.globalAlpha = 1; }
+    });
+
+    // counts
+    let s = 0, m = 0;
+    points.forEach(p => p.sticky ? s++ : m++);
+    count.textContent = s + ' sticky · ' + m + ' missed';
+  }
+
+  function addPoint(x, y) {
+    const d = Math.hypot(x - cx, y - cy);
+    points.push({ x, y, sticky: Math.abs(d - R) <= TOL });
+    draw();
+  }
+
+  cv.addEventListener('click', e => {
+    const r = cv.getBoundingClientRect();
+    const sx = cv.width / r.width, sy = cv.height / r.height;
+    addPoint((e.clientX - r.left) * sx, (e.clientY - r.top) * sy);
+  });
+
+  slider.addEventListener('input', () => {
+    R = +slider.value;
+    points.forEach(p => {
+      const d = Math.hypot(p.x - cx, p.y - cy);
+      p.sticky = Math.abs(d - R) <= TOL;
+    });
+    draw();
+  });
+
+  clearBtn.addEventListener('click', () => { points.length = 0; draw(); });
+  draw();
+})();
+
+/* ============================================================
+   SLIDE 2 — chord / diameter / arc
+============================================================ */
+(function () {
+  const cv = document.getElementById('c2');
+  const ctx = cv.getContext('2d');
+  const clearBtn = document.getElementById('s2-clear');
+  const arcBtn = document.getElementById('s2-arc-toggle');
+  const labelEl = document.getElementById('s2-label');
+  const cx = cv.width / 2, cy = cv.height / 2;
+  const R = 130;
+  let picks = [];
+  let showArc = false;
+
+  function angleOf(x, y) {
+    return Math.atan2(y - cy, x - cx);
+  }
+
+  function snapToEdge(x, y) {
+    const ang = angleOf(x, y);
+    return { x: cx + R * Math.cos(ang), y: cy + R * Math.sin(ang), ang };
+  }
+
+  function passesNearCenter(p1, p2) {
+    const A = p2.y - p1.y;
+    const B = p1.x - p2.x;
+    const C = p2.x * p1.y - p1.x * p2.y;
+    const d = Math.abs(A * cx + B * cy + C) / Math.hypot(A, B);
+    return d < 12;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = '#fcfdfd';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    // circle
+    ctx.strokeStyle = '#0d9488';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+
+    // center dot
+    ctx.fillStyle = '#134e4a';
+    ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.font = '11px Inter';
+    ctx.fillText('center', cx + 8, cy - 6);
+
+    // picks
+    picks.forEach(p => {
+      ctx.fillStyle = '#d97706';
+      ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.fill();
+    });
+
+    if (picks.length === 2) {
+      const p1 = picks[0], p2 = picks[1];
+      const isDiameter = passesNearCenter(p1, p2);
+
+      // chord / diameter line
+      ctx.strokeStyle = isDiameter ? '#d97706' : '#0d9488';
+      ctx.lineWidth = isDiameter ? 3 : 2;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+
+      // label in middle
+      const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+      ctx.fillStyle = isDiameter ? '#d97706' : '#134e4a';
+      ctx.font = 'bold 14px Playfair Display, Georgia';
+      ctx.fillText(isDiameter ? 'DIAMETER' : 'CHORD', mx + 10, my - 8);
+
+      // arc
+      if (showArc) {
+        let a1 = p1.ang, a2 = p2.ang;
+        let diff = a2 - a1;
+        while (diff > Math.PI) diff -= 2 * Math.PI;
+        while (diff < -Math.PI) diff += 2 * Math.PI;
+        ctx.strokeStyle = '#7c3aed';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, R, a1, a1 + diff, diff < 0);
+        ctx.stroke();
+        ctx.fillStyle = '#7c3aed';
+        ctx.font = 'bold 13px Playfair Display, Georgia';
+        const midAng = a1 + diff / 2;
+        ctx.fillText('ARC', cx + (R + 18) * Math.cos(midAng) - 12, cy + (R + 18) * Math.sin(midAng) + 5);
+      }
+
+      labelEl.textContent = isDiameter
+        ? (showArc ? 'diameter + arc' : 'diameter (passes through center)')
+        : (showArc ? 'chord + arc' : 'chord');
+    } else if (picks.length === 1) {
+      labelEl.textContent = 'one more point...';
+    } else {
+      labelEl.textContent = '— pick 2 points —';
+    }
+  }
+
+  cv.addEventListener('click', e => {
+    const r = cv.getBoundingClientRect();
+    const sx = cv.width / r.width, sy = cv.height / r.height;
+    const px = (e.clientX - r.left) * sx;
+    const py = (e.clientY - r.top) * sy;
+    const d = Math.hypot(px - cx, py - cy);
+    if (Math.abs(d - R) > 50) return;
+    if (picks.length >= 2) picks = [];
+    picks.push(snapToEdge(px, py));
+    draw();
+  });
+
+  clearBtn.addEventListener('click', () => { picks = []; showArc = false; arcBtn.textContent = 'Show arc between points'; draw(); });
+  arcBtn.addEventListener('click', () => {
+    showArc = !showArc;
+    arcBtn.textContent = showArc ? 'Hide arc' : 'Show arc between points';
+    draw();
+  });
+  draw();
+})();
+
+/* ============================================================
+   SLIDE 3 — visual setup
+============================================================ */
+(function () {
+  const cv = document.getElementById('c3');
+  const ctx = cv.getContext('2d');
+  const cx = cv.width / 2, cy = cv.height / 2;
+  const R = 90;
+  let t = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = '#fcfdfd';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    // circle outline
+    ctx.strokeStyle = '#0d9488';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+
+    // diameter line
+    ctx.strokeStyle = '#d97706';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy);
+    ctx.stroke();
+    ctx.fillStyle = '#d97706';
+    ctx.font = 'bold 12px Inter';
+    ctx.fillText('diameter (across)', cx - 50, cy - 10);
+
+    // walking dot around the edge
+    const ang = t;
+    const wx = cx + R * Math.cos(ang);
+    const wy = cy + R * Math.sin(ang);
+    ctx.fillStyle = '#0d9488';
+    ctx.beginPath(); ctx.arc(wx, wy, 7, 0, Math.PI * 2); ctx.fill();
+
+    ctx.fillStyle = '#134e4a';
+    ctx.font = '12px Inter';
+    ctx.fillText('walking around = circumference', cx - 80, cy + R + 24);
+
+    t += 0.018;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ============================================================
+   SLIDE 4 — measurement lab
+   IMPORTANT: We use Math.PI internally ONLY to compute the
+   unrolled length and the "circumference" readout. The student
+   sees the number as a measurement, never as π.
+============================================================ */
+(function () {
+  const cv = document.getElementById('c4');
+  const ctx = cv.getContext('2d');
+  const sizeSlider = document.getElementById('s4-size');
+  const unrollBtn = document.getElementById('s4-unroll');
+  const resetBtn = document.getElementById('s4-reset');
+  const dEl = document.getElementById('s4-d');
+  const cEl = document.getElementById('s4-c');
+  const ratioInput = document.getElementById('s4-ratio');
+  const recordBtn = document.getElementById('s4-record');
+  const tbody = document.getElementById('s4-tbody');
+  const nudge = document.getElementById('s4-nudge');
+
+  const cxC = 160, cyC = 130;
+  let rPx = +sizeSlider.value / 2;
+  let unrollProgress = 0;
+  let unrolling = false;
+
+  // 1 unit on the ruler = 20 px → friendly numbers
+  function diameterUnits() { return +(rPx * 2 / 20).toFixed(1); }
+  function circumferenceUnits() { return +(rPx * 2 * Math.PI / 20).toFixed(1); }
+
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = '#fcfdfd';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    // ruler
+    const rulerY = 320;
+    const rulerX0 = 30;
+    const rulerX1 = cv.width - 30;
+    ctx.strokeStyle = '#888';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(rulerX0, rulerY); ctx.lineTo(rulerX1, rulerY); ctx.stroke();
+    ctx.font = '10px Inter';
+    ctx.fillStyle = '#888';
+    for (let x = rulerX0, u = 0; x <= rulerX1; x += 20, u++) {
+      ctx.beginPath();
+      const big = u % 5 === 0;
+      ctx.moveTo(x, rulerY); ctx.lineTo(x, rulerY + (big ? 10 : 5)); ctx.stroke();
+      if (big) ctx.fillText(u, x - 4, rulerY + 22);
+    }
+
+    // circle (shrinks toward center as unroll progresses)
+    const drawR = rPx * (1 - unrollProgress);
+    if (drawR > 0.5) {
+      ctx.strokeStyle = '#0d9488';
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cxC, cyC, drawR, 0, Math.PI * 2); ctx.stroke();
+
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cxC - drawR, cyC); ctx.lineTo(cxC + drawR, cyC); ctx.stroke();
+    }
+
+    // unrolled circumference
+    if (unrollProgress > 0) {
+      const fullLen = rPx * 2 * Math.PI;
+      const len = fullLen * unrollProgress;
+      ctx.strokeStyle = '#0d9488';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(rulerX0, rulerY - 6);
+      ctx.lineTo(rulerX0 + len, rulerY - 6);
+      ctx.stroke();
+      ctx.fillStyle = '#0d9488';
+      ctx.beginPath(); ctx.arc(rulerX0, rulerY - 6, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(rulerX0 + len, rulerY - 6, 4, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#134e4a';
+      ctx.font = 'bold 12px Inter';
+      ctx.fillText('Circumference', rulerX0 + len / 2 - 40, rulerY - 14);
+    }
+
+    // diameter bar on ruler
+    if (unrollProgress > 0) {
+      const dLen = rPx * 2;
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(rulerX0, rulerY + 38);
+      ctx.lineTo(rulerX0 + dLen, rulerY + 38);
+      ctx.stroke();
+      ctx.fillStyle = '#d97706';
+      ctx.beginPath(); ctx.arc(rulerX0, rulerY + 38, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(rulerX0 + dLen, rulerY + 38, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#7a4d00';
+      ctx.font = 'bold 12px Inter';
+      ctx.fillText('Diameter', rulerX0 + dLen / 2 - 24, rulerY + 56);
+    }
+
+    // hint
+    ctx.fillStyle = '#134e4a';
+    ctx.font = '12px Inter';
+    if (unrollProgress < 0.05) {
+      ctx.fillText('Move the slider →  then press "Unroll the edge"', 30, 30);
+    }
+
+    dEl.textContent = unrollProgress > 0.05 ? diameterUnits() : '—';
+    cEl.textContent = unrollProgress > 0.05 ? circumferenceUnits() : '—';
+  }
+
+  function animateUnroll() {
+    if (unrolling) return;
+    unrolling = true;
+    const start = performance.now();
+    const dur = 1000;
+    function step(now) {
+      const t = Math.min(1, (now - start) / dur);
+      unrollProgress = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      draw();
+      if (t < 1) requestAnimationFrame(step);
+      else { unrolling = false; unrollProgress = 1; draw(); }
+    }
+    requestAnimationFrame(step);
+  }
+
+  sizeSlider.addEventListener('input', () => {
+    rPx = +sizeSlider.value / 2;
+    unrollProgress = 0;
+    ratioInput.value = '';
+    draw();
+  });
+  unrollBtn.addEventListener('click', animateUnroll);
+  resetBtn.addEventListener('click', () => {
+    unrollProgress = 0; ratioInput.value = ''; draw();
+  });
+
+  recordBtn.addEventListener('click', () => {
+    if (unrollProgress < 0.95) {
+      alert('Press "Unroll the edge" first so you can read both numbers.');
+      return;
+    }
+    const r = ratioInput.value.trim();
+    if (r === '') {
+      alert('Type your answer for C ÷ d first.');
+      return;
+    }
+    const empty = tbody.querySelector('.empty-row');
+    if (empty) empty.remove();
+    const rowCount = tbody.children.length + 1;
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + rowCount + '</td><td>' + diameterUnits() + '</td><td>' + circumferenceUnits() + '</td><td class="ratio-cell">' + r + '</td>';
+    tbody.appendChild(tr);
+    ratioInput.value = '';
+    if (rowCount >= 3) nudge.classList.remove('hidden');
+  });
+
+  draw();
+})();
+
+/* ============================================================
+   SLIDE 5 — confirmation reveal
+============================================================ */
+(function () {
+  const guess = document.getElementById('s5-guess');
+  const checkBtn = document.getElementById('s5-check');
+  const reveal = document.getElementById('s5-reveal');
+  const retry = document.getElementById('s5-retry');
+
+  checkBtn.addEventListener('click', () => {
+    const v = parseFloat(guess.value);
+    if (isNaN(v)) {
+      retry.classList.remove('hidden');
+      retry.textContent = 'Type a number first.';
+      return;
+    }
+    if (v >= 3.0 && v <= 3.3) {
+      reveal.classList.remove('hidden');
+      retry.classList.add('hidden');
+      reveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      retry.classList.remove('hidden');
+      retry.textContent = 'Hmm — try measuring 2 or 3 more circles on the previous slide and look again. The number is very consistent. Use the ← button below.';
+      reveal.classList.add('hidden');
+    }
+  });
+})();
+</script>
 </body>
 </html>
